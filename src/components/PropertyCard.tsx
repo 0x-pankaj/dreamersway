@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 interface PropertyCardProps {
   property: {
-    id: number;
+    id: string;
     image: string;
     name: string;
     price: string;
@@ -13,7 +13,9 @@ interface PropertyCardProps {
     developer: string;
     configuration: string;
     builtUpArea: string;
-  }
+    status: string;
+    amenities: string[];
+  };
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {

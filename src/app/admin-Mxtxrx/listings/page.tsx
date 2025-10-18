@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, X } from 'lucide-react';
+import { Edit, Trash2, X, Plus } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -337,7 +337,7 @@ export default function ListingsPage() {
                   <Label htmlFor="price">Price</Label>
                   <Input
                     id="price"
-                    type="number"
+                    
                     value={editingProperty.price}
                     onChange={(e) => setEditingProperty({
                       ...editingProperty,
@@ -447,6 +447,55 @@ export default function ListingsPage() {
                     description: e.target.value
                   })}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label>Amenities</Label>
+                <div className="space-y-2">
+                  {editingProperty.amenities.map((amenity, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        value={amenity}
+                        onChange={(e) => {
+                          const newAmenities = [...editingProperty.amenities];
+                          newAmenities[index] = e.target.value;
+                          setEditingProperty({
+                            ...editingProperty,
+                            amenities: newAmenities
+                          });
+                        }}
+                        placeholder="Enter amenity"
+                        required
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          setEditingProperty({
+                            ...editingProperty,
+                            amenities: editingProperty.amenities.filter((_, i) => i !== index)
+                          });
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setEditingProperty({
+                      ...editingProperty,
+                      amenities: [...editingProperty.amenities, '']
+                    });
+                  }}
+                  className="mt-2"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Amenity
+                </Button>
               </div>
               <div className="space-y-2">
                 <Label>Current Images</Label>

@@ -22,7 +22,7 @@ interface Property {
   baths: number;
   garages: number;
   status: string;
-  builtUpArea: string;
+  built_up_area: string;
   description: string;
   images: string[];
   amenities: string[];
@@ -126,7 +126,7 @@ export function PropertyDetailView({ property }: { property: Property }) {
 									Baths: property.baths,
 									Garages: property.garages,
 									Status: property.status,
-									'Built-up Area': property.builtUpArea,
+									'Built-up Area': property.built_up_area,
 									Price: property.price,
 								}).map(([key, value]) => (
 									<div
