@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Plus, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -15,7 +16,14 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+interface FileUpload {
+  file: File | null;
+  preview: string;
+}
+
 export default function AdminPanel() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -29,13 +37,14 @@ export default function AdminPanel() {
     status: '',
     built_up_area: '',
     description: '',
-    images: [''],
-    amenities: [''],
-    brochure: ''
+    amenities: [] as string[],
+    images: [] as FileUpload[],
+    brochure: null as File | null,
   });
-
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [uploadProgress, setUploadProgress] = useState(0);
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -65,15 +74,88 @@ export default function AdminPanel() {
     }));
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    const newImages = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+
+    setFormData(prev => ({
+      ...prev,
+      images: [...prev.images, ...newImages]
+    }));
+  };
+
+  const handleBrochureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        brochure: file
+      }));
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setUploadProgress(0);
 
     try {
+      // Upload images first
+      const imageUrls = await Promise.all(
+        formData.images.map(async (image) => {
+          if (!image.file) return '';
+          const filename = `${Date.now()}-${image.file.name}`;
+          const { data, error } = await supabase.storage
+            .from('property-images')
+            .upload(filename, image.file);
+
+          if (error) throw error;
+          
+          // Get public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('property-images')
+            .getPublicUrl(data.path);
+
+          return publicUrl;
+        })
+      );
+
+      // Upload brochure if exists
+      let brochureUrl = '';
+      if (formData.brochure) {
+        const filename = `${Date.now()}-${formData.brochure.name}`;
+        const { data, error } = await supabase.storage
+          .from('property-brochures')
+          .upload(filename, formData.brochure);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('property-brochures')
+          .getPublicUrl(data.path);
+
+        brochureUrl = publicUrl;
+      }
+
+      // Insert property data with uploaded file URLs
       const { data, error } = await supabase
         .from('properties')
         .insert([{
           ...formData,
+          images: imageUrls,
+          brochure: brochureUrl,
+          amenities: formData.amenities.filter(a => a.trim() !== ''), // Filter out empty amenities
           beds: parseInt(formData.beds),
           baths: parseInt(formData.baths),
           garages: parseInt(formData.garages)
@@ -95,16 +177,21 @@ export default function AdminPanel() {
         status: '',
         built_up_area: '',
         description: '',
-        images: [''],
-        amenities: [''],
-        brochure: ''
+        amenities: [] as string[],
+        images: [] as FileUpload[],
+        brochure: null as File | null,
       });
     } catch (error) {
-      console.log('Error:', error);
+      console.error('Error:', error);
       alert('Failed to add property');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/admin-login');
   };
 
   return (
@@ -259,59 +346,29 @@ export default function AdminPanel() {
               />
             </div>
 
-            {/* Images */}
-            <div className="space-y-2">
-              <Label>Images</Label>
-              {formData.images.map((image, index) => (
-                <div key={index} className="flex gap-2 mb-2">
-                  <Input
-                    value={image}
-                    onChange={(e) => handleArrayInputChange(index, e.target.value, 'images')}
-                    placeholder="Image URL"
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => removeArrayItem(index, 'images')}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => addArrayItem('images')}
-                className="mt-2"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Image
-              </Button>
-            </div>
-
             {/* Amenities */}
             <div className="space-y-2">
               <Label>Amenities</Label>
-              {formData.amenities.map((amenity, index) => (
-                <div key={index} className="flex gap-2 mb-2">
-                  <Input
-                    value={amenity}
-                    onChange={(e) => handleArrayInputChange(index, e.target.value, 'amenities')}
-                    placeholder="Amenity"
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => removeArrayItem(index, 'amenities')}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
+              <div className="space-y-2">
+                {formData.amenities.map((amenity, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={amenity}
+                      onChange={(e) => handleArrayInputChange(index, e.target.value, 'amenities')}
+                      placeholder="Enter amenity"
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => removeArrayItem(index, 'amenities')}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
               <Button
                 type="button"
                 variant="outline"
@@ -323,17 +380,62 @@ export default function AdminPanel() {
               </Button>
             </div>
 
-            {/* Brochure */}
+            {/* Images */}
             <div className="space-y-2">
-              <Label htmlFor="brochure">Brochure URL</Label>
+              <Label>Images</Label>
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                {formData.images.map((image, index) => (
+                  <div key={index} className="relative aspect-square">
+                    <img
+                      src={image.preview}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2"
+                      onClick={() => removeImage(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
               <Input
-                id="brochure"
-                name="brochure"
-                value={formData.brochure}
-                onChange={handleInputChange}
-                required
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="mt-2"
               />
             </div>
+
+            {/* Brochure */}
+            <div className="space-y-2">
+              <Label htmlFor="brochure">Brochure PDF</Label>
+              <Input
+                id="brochure"
+                type="file"
+                accept=".pdf"
+                onChange={handleBrochureUpload}
+              />
+              {formData.brochure && (
+                <p className="text-sm text-gray-500">
+                  Selected: {formData.brochure.name}
+                </p>
+              )}
+            </div>
+
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-sky-600 h-2.5 rounded-full"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+            )}
 
             <Button
               type="submit"
@@ -343,6 +445,8 @@ export default function AdminPanel() {
               {isSubmitting ? 'Adding Property...' : 'Add Property'}
             </Button>
           </form>
+
+        
         </Card>
       </div>
     </div>
