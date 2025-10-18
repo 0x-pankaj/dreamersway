@@ -1,13 +1,5 @@
 // 'use client';  // Add this at the top since we're using state
 
-import { useState } from 'react';
-import { Navigation } from '@/components/navigation';
-import Image from 'next/image';
-import { Building2, MapPin, Phone, Mail, Check, Download, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card } from '@/components/ui/card';
 import { Metadata } from 'next';
 import { PropertyDetailView } from '@/components/PropertyDetailView';
 import { properties } from '@/data/properties'; // Move your properties data to a separate file

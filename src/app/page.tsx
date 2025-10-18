@@ -130,7 +130,7 @@ export default function Home() {
               Featured Properties
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Discover our handpicked selection of premium properties in Bangalore's most sought-after locations.
+              {"Discover our handpicked selection of premium properties in Bangalore's most sought-after locations."}
             </p>
           </div>
           
@@ -160,7 +160,7 @@ export default function Home() {
                 <span className="block font-bold text-sky-400">Bangalore</span>
               </h2>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                At Metrosquare Realty, we believe finding the perfect property is more than a transaction—it's a step toward a better future. For over three years, we've helped families and investors discover spaces that truly match their needs.
+{"                At Metrosquare Realty, we believe finding the perfect property is more than a transaction—it's a step toward a better future. For over three years, we've helped families and investors discover spaces that truly match their needs."}
               </p>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
                 Our mission is to simplify your property journey with transparency, integrity, and a customer-first approach that has earned us the trust of numerous happy clients.
