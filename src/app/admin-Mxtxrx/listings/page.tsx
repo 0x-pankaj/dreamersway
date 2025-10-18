@@ -31,6 +31,11 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+interface FileUpload {
+  file: File | null;
+  preview: string;
+}
+
 interface Property {
   id: string;
   name: string;
@@ -48,6 +53,8 @@ interface Property {
   images: string[];
   amenities: string[];
   brochure: string;
+  newImages?: FileUpload[];  // For handling new image uploads
+  newBrochure?: File | null; // For handling new brochure upload
   created_at?: string; // Add this if it exists in your DB
   updated_at?: string; // Add this if it exists in your DB
   created_by:string;
@@ -84,7 +91,11 @@ export default function ListingsPage() {
 
 
   const handleEdit = (property: Property) => {
-    setEditingProperty(property);
+    setEditingProperty({
+      ...property,
+      newImages: [],
+      newBrochure: null
+    });
     setIsEditDialogOpen(true);
   };
 
@@ -93,31 +104,52 @@ export default function ListingsPage() {
     if (!editingProperty) return;
 
     try {
-      // Get current user
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) throw userError;
+      // Upload new images if any
+      const newImageUrls = await Promise.all(
+        (editingProperty.newImages || []).map(async (image) => {
+          if (!image.file) return '';
+          const filename = `${Date.now()}-${image.file.name}`;
+          const { data, error } = await supabase.storage
+            .from('property-images')
+            .upload(filename, image.file);
 
-      // First perform the update
+          if (error) throw error;
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from('property-images')
+            .getPublicUrl(data.path);
+
+          return publicUrl;
+        })
+      );
+
+      // Upload new brochure if any
+      let newBrochureUrl = editingProperty.brochure;
+      if (editingProperty.newBrochure) {
+        const filename = `${Date.now()}-${editingProperty.newBrochure.name}`;
+        const { data, error } = await supabase.storage
+          .from('property-brochures')
+          .upload(filename, editingProperty.newBrochure);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('property-brochures')
+          .getPublicUrl(data.path);
+
+        newBrochureUrl = publicUrl;
+      }
+
+      // Update property with new URLs
       const { error: updateError } = await supabase
         .from('properties')
         .update({
-          name: editingProperty.name,
-          location: editingProperty.location,
-          price: editingProperty.price,
-          type: editingProperty.type,
-          developer: editingProperty.developer,
-          configuration: editingProperty.configuration,
-          beds: parseInt(editingProperty.beds.toString()),
-          baths: parseInt(editingProperty.baths.toString()),
-          garages: parseInt(editingProperty.garages.toString()),
-          status: editingProperty.status,
-          built_up_area: editingProperty.built_up_area,
-          description: editingProperty.description,
-          images: editingProperty.images,
-          amenities: editingProperty.amenities,
-          brochure: editingProperty.brochure,
-          created_by: user?.id, // Add this line
+          ...editingProperty,
+          images: [...editingProperty.images, ...newImageUrls],
+          brochure: newBrochureUrl,
+          // Remove temporary upload fields
+          newImages: undefined,
+          newBrochure: undefined
         })
         .eq('id', editingProperty.id);
 
@@ -174,6 +206,60 @@ export default function ListingsPage() {
     }
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    const newImages = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+
+    setEditingProperty(prev => prev && {
+      ...prev,
+      newImages: [...(prev.newImages || []), ...newImages]
+    });
+  };
+
+  const handleBrochureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && editingProperty) {
+      setEditingProperty({
+        ...editingProperty,
+        newBrochure: file
+      });
+    }
+  };
+
+  const removeExistingImage = (indexToRemove: number) => {
+    if (!editingProperty) return;
+    setEditingProperty({
+      ...editingProperty,
+      images: editingProperty.images.filter((_, index) => index !== indexToRemove)
+    });
+  };
+
+  const removeNewImage = (indexToRemove: number) => {
+    if (!editingProperty?.newImages) return;
+    
+    // Revoke the preview URL to prevent memory leaks
+    URL.revokeObjectURL(editingProperty.newImages[indexToRemove].preview);
+    
+    setEditingProperty({
+      ...editingProperty,
+      newImages: editingProperty.newImages.filter((_, index) => index !== indexToRemove)
+    });
+  };
+
+  useEffect(() => {
+    return () => {
+      editingProperty?.newImages?.forEach(image => {
+        if (image.preview) {
+          URL.revokeObjectURL(image.preview);
+        }
+      });
+    };
+  }, [editingProperty]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -217,13 +303,13 @@ export default function ListingsPage() {
       </div>
 
       {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} >
+        <DialogContent className="xl:max-w-2xl h-full w-full ">
           <DialogHeader>
             <DialogTitle>Edit Property</DialogTitle>
           </DialogHeader>
           {editingProperty && (
-            <form onSubmit={handleUpdate} className="space-y-4">
+            <form onSubmit={handleUpdate} className="space-y-4 overflow-y-scroll">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Property Name</Label>
@@ -363,41 +449,86 @@ export default function ListingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="images">Images (one URL per line)</Label>
-                <Textarea
-                  id="images"
-                  value={editingProperty.images.join('\n')}
-                  onChange={(e) => setEditingProperty({
-                    ...editingProperty,
-                    images: e.target.value.split('\n').filter(url => url.trim() !== '')
-                  })}
-                  placeholder="Enter image URLs, one per line"
-                  rows={3}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="amenities">Amenities (one per line)</Label>
-                <Textarea
-                  id="amenities"
-                  value={editingProperty.amenities.join('\n')}
-                  onChange={(e) => setEditingProperty({
-                    ...editingProperty,
-                    amenities: e.target.value.split('\n').filter(amenity => amenity.trim() !== '')
-                  })}
-                  placeholder="Enter amenities, one per line"
-                  rows={3}
+                <Label>Current Images</Label>
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  {editingProperty.images.map((image, index) => (
+                    <div key={index} className="relative aspect-square">
+                      <img
+                        src={image}
+                        alt={`Property ${index + 1}`}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() => removeExistingImage(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                {editingProperty.newImages?.length > 0 && (
+                  <>
+                    <Label>New Images</Label>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      {editingProperty.newImages.map((image, index) => (
+                        <div key={index} className="relative aspect-square">
+                          <img
+                            src={image.preview}
+                            alt={`New upload ${index + 1}`}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={() => removeNewImage(index)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageUpload}
+                  className="mt-2"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="brochure">Brochure</Label>
+                {editingProperty.brochure && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <a 
+                      href={editingProperty.brochure}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sky-600 hover:underline"
+                    >
+                      Current Brochure
+                    </a>
+                  </div>
+                )}
                 <Input
-                  id="brochure"
-                  value={editingProperty.brochure}
-                  onChange={(e) => setEditingProperty({
-                    ...editingProperty,
-                    brochure: e.target.value
-                  })}
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleBrochureUpload}
                 />
+                {editingProperty.newBrochure && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    New brochure selected: {editingProperty.newBrochure.name}
+                  </p>
+                )}
               </div>
               <DialogFooter>
                 <Button type="submit">Save Changes</Button>
