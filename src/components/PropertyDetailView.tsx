@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import {  MapPin, Phone, Mail, Check, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -33,17 +33,43 @@ interface Property {
 
 export function PropertyDetailView({ property }: { property: Property }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  const handlePrevImage = () => {
+  const handlePrevImage = useCallback(() => {
     setCurrentImageIndex((prev) =>
       prev === 0 ? property.images.length - 1 : prev - 1
     );
-  };
+    setIsAutoPlaying(false);
+  }, [property.images.length]);
 
-  const handleNextImage = () => {
+  const handleNextImage = useCallback(() => {
     setCurrentImageIndex((prev) =>
       prev === property.images.length - 1 ? 0 : prev + 1
     );
+    setIsAutoPlaying(false);
+  }, [property.images.length]);
+
+  // Automatic slideshow
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) =>
+        prev === property.images.length - 1 ? 0 : prev + 1
+      );
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, property.images.length]);
+
+  // Reset autoplay when mouse leaves the section
+  const handleMouseLeave = () => {
+    setIsAutoPlaying(true);
+  };
+
+  // Pause autoplay when mouse enters the section
+  const handleMouseEnter = () => {
+    setIsAutoPlaying(false);
   };
 
   return (
@@ -52,35 +78,49 @@ export function PropertyDetailView({ property }: { property: Property }) {
 			<Navigation />
 
 			{/* Image Gallery */}
-			<section className="relative h-[600px] bg-gray-900">
-				<Image
-					src={property.images[currentImageIndex]}
-					alt={`${property.name} - Image ${currentImageIndex + 1}`}
-					fill
-					className="object-cover transition-opacity duration-500"
-				/>
-				<div className="absolute inset-0 flex items-center justify-between px-4">
-					<button
-						onClick={handlePrevImage}
-						className="p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
-						aria-label="Previous image"
-					>
-						<ChevronLeft className="h-6 w-6" />
-					</button>
-					<button
-						onClick={handleNextImage}
-						className="p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
-						aria-label="Next image"
-					>
-						<ChevronRight className="h-6 w-6" />
-					</button>
-				</div>
+			<section 
+        className="relative h-[600px] bg-gray-900"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {property.images.map((image, index) => (
+          <Image
+            key={image}
+            src={image}
+            alt={`${property.name} - Image ${index + 1}`}
+            fill
+            className={`object-cover transition-all duration-500 ${
+              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+            priority={index === 0}
+          />
+        ))}
+        
+        <div className="absolute inset-0 flex items-center justify-between px-4">
+          <button
+            onClick={handlePrevImage}
+            className="p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
+            aria-label="Previous image"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            onClick={handleNextImage}
+            className="p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
+            aria-label="Next image"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+        </div>
 
-				{/* Optional: Add image counter */}
-				<div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-					{currentImageIndex + 1} / {property.images.length}
-				</div>
-			</section>
+        {/* Image counter and play/pause indicator */}
+        <div className="absolute bottom-4 right-4 flex items-center space-x-2">
+          <div className="bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+            {currentImageIndex + 1} / {property.images.length}
+          </div>
+          <div className={`w-2 h-2 rounded-full ${isAutoPlaying ? 'bg-sky-400' : 'bg-gray-400'}`} />
+        </div>
+      </section>
 
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 				<div className="grid lg:grid-cols-3 gap-8">
