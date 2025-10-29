@@ -28,6 +28,7 @@ interface Property {
   images: string[];
   amenities: string[];
   brochure: string;
+  video_url?:string;
 }
 
 export function PropertyDetailView({ property }: { property: Property }) {
@@ -153,6 +154,23 @@ export function PropertyDetailView({ property }: { property: Property }) {
 								))}
 							</div>
 						</div>
+
+						{/* Video Section */}
+						{property.video_url && (
+  <div>
+    <h2 className="text-2xl font-light text-gray-900 mb-4">Property Video</h2>
+    <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+      <iframe
+        src={`https://www.youtube.com/embed/${property.video_url.split('v=')[1]}`}
+        title="Property Video"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="absolute top-0 left-0 w-full h-full"
+      />
+    </div>
+  </div>
+)}
+
 					</div>
 
 					{/* Sidebar */}

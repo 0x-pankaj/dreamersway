@@ -37,6 +37,7 @@ export default function AdminPanel() {
     status: '',
     built_up_area: '',
     description: '',
+    video_url:'',
     amenities: [] as string[],
     images: [] as FileUpload[],
     brochure: null as File | null,
@@ -177,6 +178,7 @@ export default function AdminPanel() {
         status: '',
         built_up_area: '',
         description: '',
+        video_url:'',
         amenities: [] as string[],
         images: [] as FileUpload[],
         brochure: null as File | null,
@@ -343,6 +345,17 @@ export default function AdminPanel() {
                 onChange={handleInputChange}
                 rows={4}
                 required
+              />
+            </div>
+            {/* Youtube Video */}
+            <div className="space-y-2">
+              <Label htmlFor="description">Youtube URL</Label>
+              <Input
+                id="video_url"
+                name="video_url"
+                placeholder='Youtube URL'
+                value={formData.video_url}
+                onChange={handleInputChange}
               />
             </div>
 

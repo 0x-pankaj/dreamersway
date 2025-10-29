@@ -53,6 +53,7 @@ interface Property {
   images: string[];
   amenities: string[];
   brochure: string;
+  video_url?:string;
   newImages?: FileUpload[];  // For handling new image uploads
   newBrochure?: File | null; // For handling new brochure upload
   created_at?: string; // Add this if it exists in your DB
@@ -445,6 +446,17 @@ export default function ListingsPage() {
                   onChange={(e) => setEditingProperty({
                     ...editingProperty,
                     description: e.target.value
+                  })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Youtube URL</Label>
+                <Input
+                  id="video_url"
+                  value={editingProperty.video_url ?? ""}
+                  onChange={(e) => setEditingProperty({
+                    ...editingProperty,
+                    video_url: e.target.value
                   })}
                 />
               </div>

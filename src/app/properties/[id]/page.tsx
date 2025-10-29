@@ -20,6 +20,7 @@ interface Property {
   images: string[];
   amenities: string[];
   brochure: string;
+  video_url?:string;
 }
 
 interface PageProps {
@@ -78,7 +79,7 @@ export default async function PropertyDetail(
             Property not found
           </h1>
           <p className="mt-2 text-gray-600">
-            The property you're looking for doesn't exist.
+            {"The property you're looking for doesn't exist."}
           </p>
         </div>
       </div>
