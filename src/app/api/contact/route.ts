@@ -8,7 +8,7 @@ const supabase = createClient(
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone, message } = body;
+    const { name, email, phone, message ,preferredBudget,preferredLocation} = body;
 
     // Validate input
     if (!name || !phone || !message) {
@@ -27,6 +27,9 @@ export async function POST(request: Request) {
           email,
           phone,
           message,
+          location:preferredLocation,
+          budget:preferredBudget,
+
           created_at: new Date().toISOString(),
         }
       ]);

@@ -12,6 +12,8 @@ interface ContactFormData {
   email?: string;
   phone: string;
   message: string;
+  preferredBudget: string;
+  preferredLocation: string;
 }
 
 export function ContactForm() {
@@ -19,7 +21,9 @@ export function ContactForm() {
     name: '',
     email: '',
     phone: '',
-    message: ''
+    message: '',
+    preferredBudget: '',
+    preferredLocation: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -45,7 +49,9 @@ export function ContactForm() {
         name: '',
         email: '',
         phone: '',
-        message: ''
+        message: '',
+        preferredBudget: '',
+        preferredLocation: ''
       });
       alert('Message sent successfully!');
     } catch (error) {
@@ -112,6 +118,18 @@ export function ContactForm() {
                 placeholder="Your Message"
                 rows={4}
                 required
+              />
+              <Input
+                name="preferredBudget"
+                value={formData.preferredBudget}
+                onChange={handleChange}
+                placeholder="Preferred Budget"
+              />
+              <Input
+                name="preferredLocation"
+                value={formData.preferredLocation}
+                onChange={handleChange}
+                placeholder="Preferred Location"
               />
               <Button 
                 type="submit" 

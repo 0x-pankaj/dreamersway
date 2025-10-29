@@ -24,6 +24,8 @@ interface Contact {
   email: string;
   phone: string;
   message: string;
+  location:string;
+  budget:string;
 }
 
 export default function FeedbackPage() {
@@ -72,6 +74,8 @@ export default function FeedbackPage() {
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Message</TableHead>
+              <TableHead>Preferred Location</TableHead>
+              <TableHead>Prederred Budget</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -86,6 +90,8 @@ export default function FeedbackPage() {
                 <TableCell className="max-w-md truncate">
                   {contact.message}
                 </TableCell>
+                <TableCell>{contact.location}</TableCell>
+                <TableCell>{contact.budget}</TableCell>
               </TableRow>
             ))}
           </TableBody>
