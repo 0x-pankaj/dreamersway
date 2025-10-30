@@ -2,10 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import {  MapPin, Phone, Mail, Check, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import {  MapPin,  Check, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Navigation } from '@/components/navigation';
 import { ContactForm } from './ContactForm';

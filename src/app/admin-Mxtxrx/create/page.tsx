@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Plus, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -22,7 +21,6 @@ interface FileUpload {
 }
 
 export default function AdminPanel() {
-  const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -189,11 +187,6 @@ export default function AdminPanel() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/admin-login');
   };
 
   return (

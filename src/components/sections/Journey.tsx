@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Building2, FileCheck, Clock, Wrench, Shield, Users, Mail, Phone } from "lucide-react";
+import { Building2, FileCheck, Clock } from "lucide-react";
 
 function Journey() {
   return (
