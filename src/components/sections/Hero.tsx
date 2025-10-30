@@ -46,7 +46,7 @@ export function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-        <h1 className="text-6xl md:text-8xl font-light tracking-tight mb-6 text-[#0a213f] font-mont">
+        <h1 className="text-4xl lg:text-8xl font-light tracking-tight mb-6 text-[#0a213f] font-mont">
          <span className='font-semibold'>
            METRO 
           </span>

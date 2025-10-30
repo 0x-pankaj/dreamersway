@@ -95,14 +95,14 @@ export function Navigation() {
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
                 <SheetHeader>
-                  <SheetTitle className="text-left">Metrosquare</SheetTitle>
+                  <SheetTitle className="text-left font-mont">MENU</SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col space-y-4 mt-8">
+                <div className="flex flex-col mt-8  items-center">
                   {navigationLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`text-lg text-gray-700 hover:text-gray-900 transition-colors py-2 ${
+                      className={`text-lg text-gray-700 hover:text-gray-900 transition-colors py-2 border-1 w-full  ${
                         pathname === link.href ? 'text-sky-600' : ''
                       }`}
                       onClick={(e) => handleClick(e, link.href, link.isScroll)}
