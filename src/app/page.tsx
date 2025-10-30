@@ -40,7 +40,7 @@ export default async function Home() {
     cache: 'default' 
   });
   const data = await response.json();
-  console.log("data from the server",data)
+  // console.log("data from the server",data)
   const properties = data.properties;
 
 

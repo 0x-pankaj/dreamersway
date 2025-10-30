@@ -171,7 +171,7 @@ export default function ListingsPage() {
         throw fetchError;
       }
 
-      console.log('Updated data:', updatedData); // Debug log
+      // console.log('Updated data:', updatedData); // Debug log
 
       // Update local state with fresh data
       if (updatedData) {
@@ -532,7 +532,7 @@ export default function ListingsPage() {
                   ))}
                 </div>
 
-                {editingProperty.newImages?.length > 0 && (
+                {editingProperty.newImages && editingProperty.newImages?.length > 0 && (
                   <>
                     <Label>New Images</Label>
                     <div className="grid grid-cols-3 gap-4 mb-4">

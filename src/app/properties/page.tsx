@@ -1,6 +1,6 @@
 import { Navigation } from '@/components/navigation';
 import { PropertyCard } from '@/components/PropertyCard';
-
+import { Property } from '../types/type';
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/property?filter=top`, {
     cache: 'default' 
   });
@@ -26,7 +26,7 @@ export default function PropertiesPage() {
         Featured Properties
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {properties.map((property) => (
+        {properties.map((property:Property) => (
                     <PropertyCard 
                 key={property.id} 
                 property={{
@@ -51,7 +51,7 @@ export default function PropertiesPage() {
         All Properties
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {allProperties.map((property) => (
+        {allProperties.map((property:Property) => (
             // <PropertyCard key={property.id} property={property} />
                 <PropertyCard 
                 key={property.id} 
