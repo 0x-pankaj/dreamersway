@@ -16,4 +16,6 @@ export interface Property {
   amenities: string[];
   brochure: string;
   video_url?:string;
+  // Numeric price derived from `price` string for filtering and comparisons
+  numericPrice?: number;
 }

@@ -35,13 +35,24 @@ interface Property {
 
 // Update the Home component to async
 export default async function Home() {
-  // Fetch top properties
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/property?filter=top`, {
-    cache: 'default' 
-  });
-  const data = await response.json();
-  // console.log("data from the server",data)
-  const properties = data.properties;
+  // Fetch top properties. Wrap in try/catch so prerendering during build doesn't fail
+  // if an external backend URL is not reachable.
+  let properties = [];
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/property?filter=top`, {
+      cache: 'default'
+    });
+    if (response.ok) {
+      const data = await response.json();
+      properties = data.properties || [];
+    } else {
+      console.warn('Non-OK response fetching properties during build:', response.status);
+    }
+  } catch (err) {
+    // During `next build` the backend or env-based URL may be unreachable; fall back to empty list.
+    console.warn('Fetch failed during build or prerender:', err);
+    properties = [];
+  }
 
 
   return (

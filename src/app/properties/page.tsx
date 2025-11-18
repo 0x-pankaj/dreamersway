@@ -75,8 +75,8 @@ export default function PropertiesPage() {
       const matchesLocation = selectedLocations.length === 0 || 
                             selectedLocations.includes(property.location);
                             console.log("property numeric price",property.numericPrice)
-      const matchesPrice = property.numericPrice >= priceRange[0] && 
-                          property.numericPrice <= priceRange[1];
+  const numeric = property.numericPrice ?? 0;
+  const matchesPrice = numeric >= priceRange[0] && numeric <= priceRange[1];
       
       return matchesLocation && matchesPrice;
     });

@@ -6,9 +6,8 @@ import { Property } from '@/app/types/type';
 
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  // Next's generated types use Promise-wrapped params in some setups; accept that shape.
+  params?: Promise<{ id: string }>;
 }
 
 // Fetch property details from API
@@ -34,7 +33,8 @@ async function getPropertyDetails(id: string): Promise<Property | null> {
 export async function generateMetadata(
   { params }: PageProps
 ): Promise<Metadata> {
-  const property = await getPropertyDetails(params.id);
+  const resolved = params ? await params : { id: '' };
+  const property = await getPropertyDetails(resolved.id);
 
   if (!property) {
     return {
@@ -51,7 +51,8 @@ export async function generateMetadata(
 export default async function PropertyDetail(
   { params }: PageProps
 ) {
-  const property = await getPropertyDetails(params.id);
+  const resolved = params ? await params : { id: '' };
+  const property = await getPropertyDetails(resolved.id);
 
   if (!property) {
     return (
