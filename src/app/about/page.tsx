@@ -4,64 +4,68 @@ import Footer from "@/components/sections/Footer";
 
 const teamMembers = [
   {
-    name: "Michael Doe",
-    role: "Property Specialist",
-    image: "team-1.png",
-    url:"https://yjhbkhovlsxilqdtewki.supabase.co/storage/v1/object/public/property-brochures/team-1.png",
-    description: "Experienced property specialist with a proven track record in luxury real estate and customer satisfaction.",
+    name: "S Jeet Gupta",
+    role: "Sales Manager",
+    image: "jeet-1.jpg",
+    url: "https://yjhbkhovlsxilqdtewki.supabase.co/storage/v1/object/public/property-brochures/team-1.png",
+    description:
+      "Experienced Sales Manager known for driving revenue growth, building strong client relationships, and leading high-performing sales teams with strategic precision.",
     socials: {
       facebook: "#",
       twitter: "#",
       instagram: "#",
-      linkedin: "#"
-    }
+      linkedin: "#",
+    },
   },
   {
-    name: "Jenny Doe",
-    role: "Architect Engineer",
-    image: "team-2.png",
-    url:"https://yjhbkhovlsxilqdtewki.supabase.co/storage/v1/object/public/property-brochures/team-2.png",
-    description: "Experienced property specialist with a proven track record in luxury real estate and customer satisfaction.",
+    name: "Subham Kotale",
+    role: "Customer Relationship Manager",
+    image: "subham-1.jpg",
+    url: "https://yjhbkhovlsxilqdtewki.supabase.co/storage/v1/object/public/property-brochures/team-2.png",
+    description:
+      "An experienced CRM professional, Subham Kotale specializes in resolving client concerns, improving engagement, and maintaining high retention rates.",
     socials: {
       facebook: "#",
       twitter: "#",
       instagram: "#",
-      linkedin: "#"
-    }
+      linkedin: "#",
+    },
   },
-  {
-    name: "Michael Doe",
-    role: "Property Specialist",
-    image: "team-1.png",
-    url:"https://yjhbkhovlsxilqdtewki.supabase.co/storage/v1/object/public/property-brochures/team-1.png",
-    description: "Experienced property specialist with a proven track record in luxury real estate and customer satisfaction.",
-    socials: {
-      facebook: "#",
-      twitter: "#",
-      instagram: "#",
-      linkedin: "#"
-    }
-  },
-  {
-    name: "Jenny Doe",
-    role: "Architect Engineer",
-    image: "team-2.png",
-    url:"https://yjhbkhovlsxilqdtewki.supabase.co/storage/v1/object/public/property-brochures/team-2.png",
-    description: "Experienced property specialist with a proven track record in luxury real estate and customer satisfaction.",
-    socials: {
-      facebook: "#",
-      twitter: "#",
-      instagram: "#",
-      linkedin: "#"
-    }
-  },
+  // {
+  //   name: "Michael Doe",
+  //   role: "Property Specialist",
+  //   image: "team-1.png",
+  //   url: "https://yjhbkhovlsxilqdtewki.supabase.co/storage/v1/object/public/property-brochures/team-1.png",
+  //   description:
+  //     "Experienced property specialist with a proven track record in luxury real estate and customer satisfaction.",
+  //   socials: {
+  //     facebook: "#",
+  //     twitter: "#",
+  //     instagram: "#",
+  //     linkedin: "#",
+  //   },
+  // },
+  // {
+  //   name: "Jenny Doe",
+  //   role: "Architect Engineer",
+  //   image: "team-2.png",
+  //   url: "https://yjhbkhovlsxilqdtewki.supabase.co/storage/v1/object/public/property-brochures/team-2.png",
+  //   description:
+  //     "Experienced property specialist with a proven track record in luxury real estate and customer satisfaction.",
+  //   socials: {
+  //     facebook: "#",
+  //     twitter: "#",
+  //     instagram: "#",
+  //     linkedin: "#",
+  //   },
+  // },
 ];
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      
+
       <main className="pt-16">
         {/* Hero Section */}
         <section className="py-24 bg-gray-50">
@@ -71,7 +75,8 @@ export default function AboutPage() {
                 About Metrosquare
               </h1>
               <p className="text-lg text-gray-600">
-                We are a dedicated team of real estate professionals committed to helping you find your perfect property in Bangalore.
+                We are a dedicated team of real estate professionals committed
+                to helping you find your perfect property in Bangalore.
               </p>
             </div>
           </div>
@@ -85,11 +90,13 @@ export default function AboutPage() {
                 Our Expert Team
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Meet our experienced professionals who are dedicated to providing exceptional service and finding the perfect property solutions.
+                Meet our experienced professionals who are dedicated to
+                providing exceptional service and finding the perfect property
+                solutions.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2">
               {teamMembers.map((member, index) => (
                 <TeamMember key={index} {...member} />
               ))}
