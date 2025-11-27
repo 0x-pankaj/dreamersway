@@ -10,12 +10,12 @@ export const partners = [
     href: "https://www.prestigeconstructions.com/",
   },
   {
-    img: "/images/partners/brigade.svg",
+    img: "/images/partners/brigade.png",
     alt: "Brigade",
     href: "https://www.brigadegroup.com/",
   },
   {
-    img: "/images/partners/bhartiya-city.svg",
+    img: "/images/partners/bharatiyacity.png",
     alt: "Bhartiya City",
     href: "https://bhartiyacity.com/",
   },
@@ -40,7 +40,7 @@ export const partners = [
     href: "https://www.shapoorjipallonji.com/",
   },
   {
-    img: "/images/partners/dnr-group.svg",
+    img: "/images/partners/dnr.png",
     alt: "DNR Group",
     href: "https://dnrgroup.in/",
   },
