@@ -251,31 +251,52 @@ function Services() {
               We proudly collaborate with leading builders across Bangalore and
               Karnataka.
             </p>
+            {/* Marquee partners track — single row scrolling left (content duplicated for seamless loop) */}
           </div>
           <div className="flex flex-wrap justify-center items-center gap-12">
             {/* Render partner logos from the public/images/partners directory */}
-            {partners.map((p) => (
-              <div key={p.alt} className="flex flex-col items-center w-40">
-                <a
-                  href={p.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="block"
-                >
-                  {/* Some logos are remote PNGs/SVGs, use img so Next's image loader isn't required */}
-                  <img
-                    src={p.img}
-                    alt={p.alt}
-                    width={140}
-                    height={70}
-                    className="object-contain mb-2"
-                  />
-                </a>
-                {/* <a href={p.href} target="_blank" rel="noreferrer noopener" className="text-gray-700 text-sm mt-1 hover:text-sky-500">
-                  {p.alt}
-                </a> */}
+              <div className="overflow-hidden mt-6">
+                <div className="partners-marquee relative">
+                  {/* track duplicates partners array to create continuous scroll */}
+                  <div className="partners-track flex items-center space-x-10">
+                    {partners.concat(partners).map((p, idx) => (
+                      <div key={`${p.alt}-${idx}`} className="flex-shrink-0 w-48 flex items-center justify-center opacity-90">
+                        <a href={p.href} target="_blank" rel="noreferrer noopener" className="block">
+                          <img src={p.img} alt={p.alt} width={160} height={70} className="object-contain" />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Marquee styles scoped to this component */}
+                <style>{`
+                  .partners-marquee { /* provide visual bounds */ padding: 1rem 0; }
+                  .partners-track { display: flex; align-items: center; gap: 2.5rem; will-change: transform; }
+
+                  /* marquee animation: slide left by 50% (we duplicated content) */
+                  @keyframes marquee {
+                    0% { transform: translateX(0%); }
+                    100% { transform: translateX(-50%); }
+                  }
+
+                  /* run animation by default, pause on hover, and respect reduced motion */
+                  .partners-track {
+                    animation: marquee 28s linear infinite;
+                  }
+                  .partners-marquee:hover .partners-track { animation-play-state: paused; }
+
+                  @media (max-width: 768px) {
+                    /* smaller screens -> slower for legibility */
+                    .partners-track { animation-duration: 36s; }
+                    .partners-track div { width: 10rem; }
+                  }
+
+                  @media (prefers-reduced-motion: reduce) {
+                    .partners-track { animation: none; }
+                  }
+                `}</style>
               </div>
-            ))}
           </div>
         </div>
       </section>
