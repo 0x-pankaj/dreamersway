@@ -11,10 +11,10 @@ const teamMembers = [
     description:
       "Experienced Sales Manager known for driving revenue growth, building strong client relationships, and leading high-performing sales teams with strategic precision.",
     socials: {
-      facebook: "#",
-      twitter: "#",
-      instagram: "#",
-      linkedin: "#",
+      instagram:
+        "https://www.instagram.com/metrosquare.realty?igsh=ZjBhd2dsMnlvbWxk&utm_source=qr ",
+      linkedin:
+        "https://www.linkedin.com/in/metro-square-realty-3947ba394?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app ",
     },
   },
   {
@@ -25,10 +25,10 @@ const teamMembers = [
     description:
       "An experienced CRM professional, Subham Kotale specializes in resolving client concerns, improving engagement, and maintaining high retention rates.",
     socials: {
-      facebook: "#",
-      twitter: "#",
-      instagram: "#",
-      linkedin: "#",
+      instagram:
+        "https://www.instagram.com/metrosquare.realty?igsh=ZjBhd2dsMnlvbWxk&utm_source=qr ",
+      linkedin:
+        "https://www.linkedin.com/in/metro-square-realty-3947ba394?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app ",
     },
   },
   // {

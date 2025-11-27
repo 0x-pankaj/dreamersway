@@ -1,9 +1,10 @@
-import Image from 'next/image'
-import React from 'react'
+import Image from "next/image";
+import React from "react";
 
-import {  Clock, Wrench, Shield, Users } from "lucide-react";
-import { Button } from '../ui/button';
-import { Card, CardContent } from '../ui/card';
+import { Clock, Wrench, Shield, Users } from "lucide-react";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
+import { partners } from "@/data/partners";
 
 function Services() {
   return (
@@ -30,8 +31,13 @@ function Services() {
                     <Wrench className="h-6 w-6 text-sky-400 mt-1" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Buy Residential Properties</h3>
-                    <p className="text-gray-600">Discover apartments, villas, and homes tailored to your needs.</p>
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      Buy Residential Properties
+                    </h3>
+                    <p className="text-gray-600">
+                      Discover apartments, villas, and homes tailored to your
+                      needs.
+                    </p>
                   </div>
                 </div>
 
@@ -40,8 +46,13 @@ function Services() {
                     <Shield className="h-6 w-6 text-sky-400 mt-1" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Resale of Residential Properties</h3>
-                    <p className="text-gray-600">Get expert guidance for selling your property at the best value.</p>
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      Resale of Residential Properties
+                    </h3>
+                    <p className="text-gray-600">
+                      Get expert guidance for selling your property at the best
+                      value.
+                    </p>
                   </div>
                 </div>
 
@@ -50,13 +61,21 @@ function Services() {
                     <Users className="h-6 w-6 text-sky-400 mt-1" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Investment Opportunities</h3>
-                    <p className="text-gray-600">Explore investment options in Bangalore’s thriving real estate market.</p>
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      Investment Opportunities
+                    </h3>
+                    <p className="text-gray-600">
+                      Explore investment options in Bangalore’s thriving real
+                      estate market.
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="mt-8">
-                <Button variant="outline" className="border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-white">
+                <Button
+                  variant="outline"
+                  className="border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-white"
+                >
                   View All Services
                 </Button>
               </div>
@@ -73,7 +92,8 @@ function Services() {
               Why Choose Metrosquare Realty
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Deep market knowledge, transparency, and a customer-first approach—experience the difference.
+              Deep market knowledge, transparency, and a customer-first
+              approach—experience the difference.
             </p>
           </div>
 
@@ -83,9 +103,12 @@ function Services() {
                 <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Shield className="h-6 w-6 text-sky-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-3">Integrity & Trust</h3>
+                <h3 className="font-semibold text-gray-900 mb-3">
+                  Integrity & Trust
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Transparent processes and honest advice have earned us the trust of countless clients.
+                  Transparent processes and honest advice have earned us the
+                  trust of countless clients.
                 </p>
               </CardContent>
             </Card>
@@ -95,9 +118,12 @@ function Services() {
                 <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Users className="h-6 w-6 text-sky-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-3">Personalized Service</h3>
+                <h3 className="font-semibold text-gray-900 mb-3">
+                  Personalized Service
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Our team listens and tailors every experience to your unique needs and goals.
+                  Our team listens and tailors every experience to your unique
+                  needs and goals.
                 </p>
               </CardContent>
             </Card>
@@ -107,9 +133,12 @@ function Services() {
                 <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Clock className="h-6 w-6 text-sky-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-3">Market Expertise</h3>
+                <h3 className="font-semibold text-gray-900 mb-3">
+                  Market Expertise
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Benefit from our deep knowledge of Bangalore’s real estate market and trends.
+                  Benefit from our deep knowledge of Bangalore’s real estate
+                  market and trends.
                 </p>
               </CardContent>
             </Card>
@@ -125,7 +154,8 @@ function Services() {
               What Our Clients Say
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Hear from some of our happy clients who found their dream homes and investments with Metrosquare Realty.
+              Hear from some of our happy clients who found their dream homes
+              and investments with Metrosquare Realty.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -141,12 +171,16 @@ function Services() {
                     />
                   </div>
                   <div className="text-center">
-                    <div className="font-semibold text-sky-400">Rahul Sharma</div>
+                    <div className="font-semibold text-sky-400">
+                      Rahul Sharma
+                    </div>
                     <div className="text-gray-500 text-sm mb-4">Bangalore</div>
                   </div>
                 </div>
                 <p className="text-gray-700 italic text-center">
-                 { "Metrosquare Realty made my first home purchase smooth and stress-free. Highly recommended!"}
+                  {
+                    "Metrosquare Realty made my first home purchase smooth and stress-free. Highly recommended!"
+                  }
                 </p>
               </CardContent>
             </Card>
@@ -163,12 +197,16 @@ function Services() {
                     />
                   </div>
                   <div className="text-center">
-                    <div className="font-semibold text-sky-400">Priya Menon</div>
+                    <div className="font-semibold text-sky-400">
+                      Priya Menon
+                    </div>
                     <div className="text-gray-500 text-sm mb-4">Whitefield</div>
                   </div>
                 </div>
                 <p className="text-gray-700 italic text-center">
-                  {"Professional, honest, and always available. They helped me get the best value for my property."}
+                  {
+                    "Professional, honest, and always available. They helped me get the best value for my property."
+                  }
                 </p>
               </CardContent>
             </Card>
@@ -186,11 +224,15 @@ function Services() {
                   </div>
                   <div className="text-center">
                     <div className="font-semibold text-sky-400">Amit Desai</div>
-                    <div className="text-gray-500 text-sm mb-4">Koramangala</div>
+                    <div className="text-gray-500 text-sm mb-4">
+                      Koramangala
+                    </div>
                   </div>
                 </div>
                 <p className="text-gray-700 italic text-center">
-                {  "Great team and excellent service. My investment journey was seamless thanks to Metrosquare."}
+                  {
+                    "Great team and excellent service. My investment journey was seamless thanks to Metrosquare."
+                  }
                 </p>
               </CardContent>
             </Card>
@@ -206,58 +248,39 @@ function Services() {
               Our Partners
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We proudly collaborate with leading builders across Bangalore and Karnataka.
+              We proudly collaborate with leading builders across Bangalore and
+              Karnataka.
             </p>
           </div>
           <div className="flex flex-wrap justify-center items-center gap-12">
-            <div className="flex flex-col items-center">
-              <Image
-                src="logo1.png"
-                alt="Puravankara"
-                width={120}
-                height={60}
-                className="object-contain mb-2"
-              />
-              {/* <span className="text-gray-700">Puravankara</span> */}
-            </div>
-            <div className="flex flex-col items-center">
-              <Image
-                src="logo2.png"
-                alt="Brigade"
-                width={120}
-                height={60}
-                className="object-contain mb-2"
-              />
-              {/* <span className="text-gray-700">Brigade</span> */}
-            </div>
-            <div className="flex flex-col items-center">
-              <Image
-                src="logo3.png"
-                alt="Sobha"
-                width={120}
-                height={60}
-                className="object-contain mb-2"
-              />
-              {/* <span className="text-gray-700">Sobha</span> */}
-            </div>
-            <div className="flex flex-col items-center">
-              <Image
-                src="logo4.png"
-                alt="Prestige"
-                width={120}
-                height={60}
-                className="object-contain mb-2"
-              />
-              {/* <span className="text-gray-700">Prestige</span> */}
-            </div>
-            {/* Add more builder logos as needed */}
+            {/* Render partner logos from the public/images/partners directory */}
+            {partners.map((p) => (
+              <div key={p.alt} className="flex flex-col items-center w-40">
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="block"
+                >
+                  {/* Some logos are remote PNGs/SVGs, use img so Next's image loader isn't required */}
+                  <img
+                    src={p.img}
+                    alt={p.alt}
+                    width={140}
+                    height={70}
+                    className="object-contain mb-2"
+                  />
+                </a>
+                {/* <a href={p.href} target="_blank" rel="noreferrer noopener" className="text-gray-700 text-sm mt-1 hover:text-sky-500">
+                  {p.alt}
+                </a> */}
+              </div>
+            ))}
           </div>
         </div>
       </section>
-
-
     </div>
-  )
+  );
 }
 
-export default Services
+export default Services;
