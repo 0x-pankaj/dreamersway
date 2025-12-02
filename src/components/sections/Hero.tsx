@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import Image from 'next/image'
-import React, { useState, useEffect } from 'react'
-import { Button } from '../ui/button'
+import Image from "next/image";
+import React, { useState, useEffect } from "react";
+import { Button } from "../ui/button";
 
 const images = [
   "https://images.unsplash.com/photo-1588261728509-45dbee85ae7c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&fm=jpg&q=60&w=3000",
   "https://images.unsplash.com/photo-1486325212027-8081e485255e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3000&q=60",
-  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3000&q=60"
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3000&q=60",
 ];
 
 export function Hero() {
@@ -15,7 +15,7 @@ export function Hero() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
+      setCurrentImageIndex((prevIndex) =>
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
     }, 6000); // Change image every 6 seconds
@@ -30,7 +30,7 @@ export function Hero() {
         <div
           key={index}
           className={`absolute inset-0 z-0 transition-opacity duration-500 ease-linear ${
-            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            index === currentImageIndex ? "opacity-100" : "opacity-0"
           }`}
         >
           <Image
@@ -47,16 +47,13 @@ export function Hero() {
       {/* Content */}
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
         <h1 className="text-4xl lg:text-8xl font-light tracking-tight mb-6 text-[#0a213f] font-mont">
-         <span className='font-semibold'>
-           METRO 
-          </span>
-          SQUARE 
-          REALTY
+          <span className="font-semibold">METRO</span>
+          SQUARE REALTY
           {/* <span className='text-blue-500 block '>
           </span> */}
         </h1>
         <p className="text-xl md:text-2xl font-light mb-4 opacity-90">
-          SQUARE UP YOUR DREAMS
+          SQUARE YOUR DREAMS
         </p>
         <Button
           size="lg"
@@ -68,4 +65,3 @@ export function Hero() {
     </section>
   );
 }
-
