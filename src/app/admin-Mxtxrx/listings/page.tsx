@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, X, Plus } from 'lucide-react';
+import { Edit, Trash2, X, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -53,12 +53,12 @@ interface Property {
   images: string[];
   amenities: string[];
   brochure: string;
-  video_url?:string;
-  newImages?: FileUpload[];  // For handling new image uploads
+  video_url?: string;
+  newImages?: FileUpload[]; // For handling new image uploads
   newBrochure?: File | null; // For handling new brochure upload
   created_at?: string; // Add this if it exists in your DB
   updated_at?: string; // Add this if it exists in your DB
-  created_by:string;
+  created_by: string;
 }
 
 export default function ListingsPage() {
@@ -67,7 +67,9 @@ export default function ListingsPage() {
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
+  const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(
+    null
+  );
 
   useEffect(() => {
     fetchProperties();
@@ -76,26 +78,24 @@ export default function ListingsPage() {
   const fetchProperties = async () => {
     try {
       const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("properties")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setProperties(data || []);
     } catch (error) {
-      console.error('Error fetching properties:', error);
+      console.error("Error fetching properties:", error);
     } finally {
       setLoading(false);
     }
   };
 
-
-
   const handleEdit = (property: Property) => {
     setEditingProperty({
       ...property,
       newImages: [],
-      newBrochure: null
+      newBrochure: null,
     });
     setIsEditDialogOpen(true);
   };
@@ -108,17 +108,17 @@ export default function ListingsPage() {
       // Upload new images if any
       const newImageUrls = await Promise.all(
         (editingProperty.newImages || []).map(async (image) => {
-          if (!image.file) return '';
+          if (!image.file) return "";
           const filename = `${Date.now()}-${image.file.name}`;
           const { data, error } = await supabase.storage
-            .from('property-images')
+            .from("property-images")
             .upload(filename, image.file);
 
           if (error) throw error;
-          
-          const { data: { publicUrl } } = supabase.storage
-            .from('property-images')
-            .getPublicUrl(data.path);
+
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from("property-images").getPublicUrl(data.path);
 
           return publicUrl;
         })
@@ -129,45 +129,52 @@ export default function ListingsPage() {
       if (editingProperty.newBrochure) {
         const filename = `${Date.now()}-${editingProperty.newBrochure.name}`;
         const { data, error } = await supabase.storage
-          .from('property-brochures')
+          .from("property-brochures")
           .upload(filename, editingProperty.newBrochure);
 
         if (error) throw error;
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('property-brochures')
-          .getPublicUrl(data.path);
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("property-brochures").getPublicUrl(data.path);
 
         newBrochureUrl = publicUrl;
       }
 
       // Update property with new URLs
+      // Build clean payload (do NOT send id / temp fields)
+      const { id, newImages, newBrochure, created_at, updated_at, ...rest } =
+        editingProperty;
+
+      const updatePayload = {
+        ...rest,
+        images: [
+          ...(editingProperty.images || []),
+          ...newImageUrls.filter(Boolean), // remove empty strings
+        ],
+        brochure: newBrochureUrl,
+      };
+
+      // Update property with new URLs (id only in WHERE)
       const { error: updateError } = await supabase
-        .from('properties')
-        .update({
-          ...editingProperty,
-          images: [...editingProperty.images, ...newImageUrls],
-          brochure: newBrochureUrl,
-          // Remove temporary upload fields
-          newImages: undefined,
-          newBrochure: undefined
-        })
-        .eq('id', editingProperty.id);
+        .from("properties")
+        .update(updatePayload) // 👈 no id here
+        .eq("id", id); // 👈 id only used as filter
 
       if (updateError) {
-        console.error('Update error:', updateError);
+        console.error("Update error:", updateError);
         throw updateError;
       }
 
       // Then fetch the updated record
       const { data: updatedData, error: fetchError } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('id', editingProperty.id)
+        .from("properties")
+        .select("*")
+        .eq("id", editingProperty.id)
         .single();
 
       if (fetchError) {
-        console.error('Fetch error:', fetchError);
+        console.error("Fetch error:", fetchError);
         throw fetchError;
       }
 
@@ -175,14 +182,14 @@ export default function ListingsPage() {
 
       // Update local state with fresh data
       if (updatedData) {
-        setProperties(properties.map(p => 
-          p.id === editingProperty.id ? updatedData : p
-        ));
+        setProperties(
+          properties.map((p) => (p.id === editingProperty.id ? updatedData : p))
+        );
         setIsEditDialogOpen(false);
-        alert('Property updated successfully!');
+        alert("Property updated successfully!");
       }
     } catch (error) {
-      console.error('Error updating property:', error);
+      console.error("Error updating property:", error);
       alert(`Failed to update property: ${error}`);
     }
   };
@@ -192,33 +199,36 @@ export default function ListingsPage() {
       if (!propertyToDelete) return;
 
       const { error } = await supabase
-        .from('properties')
+        .from("properties")
         .delete()
-        .eq('id', propertyToDelete.id);
+        .eq("id", propertyToDelete.id);
 
       if (error) throw error;
 
-      setProperties(properties.filter(p => p.id !== propertyToDelete.id));
+      setProperties(properties.filter((p) => p.id !== propertyToDelete.id));
       setIsDeleteDialogOpen(false);
-      alert('Property deleted successfully!');
+      alert("Property deleted successfully!");
     } catch (error) {
-      console.error('Error deleting property:', error);
-      alert('Failed to delete property');
+      console.error("Error deleting property:", error);
+      alert("Failed to delete property");
     }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
-    const newImages = files.map(file => ({
+
+    const newImages = files.map((file) => ({
       file,
-      preview: URL.createObjectURL(file)
+      preview: URL.createObjectURL(file),
     }));
 
-    setEditingProperty(prev => prev && {
-      ...prev,
-      newImages: [...(prev.newImages || []), ...newImages]
-    });
+    setEditingProperty(
+      (prev) =>
+        prev && {
+          ...prev,
+          newImages: [...(prev.newImages || []), ...newImages],
+        }
+    );
   };
 
   const handleBrochureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -226,7 +236,7 @@ export default function ListingsPage() {
     if (file && editingProperty) {
       setEditingProperty({
         ...editingProperty,
-        newBrochure: file
+        newBrochure: file,
       });
     }
   };
@@ -235,25 +245,29 @@ export default function ListingsPage() {
     if (!editingProperty) return;
     setEditingProperty({
       ...editingProperty,
-      images: editingProperty.images.filter((_, index) => index !== indexToRemove)
+      images: editingProperty.images.filter(
+        (_, index) => index !== indexToRemove
+      ),
     });
   };
 
   const removeNewImage = (indexToRemove: number) => {
     if (!editingProperty?.newImages) return;
-    
+
     // Revoke the preview URL to prevent memory leaks
     URL.revokeObjectURL(editingProperty.newImages[indexToRemove].preview);
-    
+
     setEditingProperty({
       ...editingProperty,
-      newImages: editingProperty.newImages.filter((_, index) => index !== indexToRemove)
+      newImages: editingProperty.newImages.filter(
+        (_, index) => index !== indexToRemove
+      ),
     });
   };
 
   useEffect(() => {
     return () => {
-      editingProperty?.newImages?.forEach(image => {
+      editingProperty?.newImages?.forEach((image) => {
         if (image.preview) {
           URL.revokeObjectURL(image.preview);
         }
@@ -278,16 +292,16 @@ export default function ListingsPage() {
                 <p className="text-sky-600">{property.price}</p>
               </div>
               <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => handleEdit(property)}
                 >
                   <Edit className="w-4 h-4 mr-2" />
                   Edit
                 </Button>
-                <Button 
-                  variant="destructive" 
+                <Button
+                  variant="destructive"
                   size="sm"
                   onClick={() => {
                     setPropertyToDelete(property);
@@ -304,23 +318,28 @@ export default function ListingsPage() {
       </div>
 
       {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} >
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="xl:max-w-2xl h-full w-full ">
           <DialogHeader>
             <DialogTitle>Edit Property</DialogTitle>
           </DialogHeader>
           {editingProperty && (
-            <form onSubmit={handleUpdate} className="space-y-4 overflow-y-scroll">
+            <form
+              onSubmit={handleUpdate}
+              className="space-y-4 overflow-y-scroll"
+            >
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Property Name</Label>
                   <Input
                     id="name"
                     value={editingProperty.name}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      name: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        name: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -328,22 +347,25 @@ export default function ListingsPage() {
                   <Input
                     id="location"
                     value={editingProperty.location}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      location: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        location: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="price">Price</Label>
                   <Input
                     id="price"
-                    
                     value={editingProperty.price}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      price: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        price: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -351,10 +373,12 @@ export default function ListingsPage() {
                   <Input
                     id="type"
                     value={editingProperty.type}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      type: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        type: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -362,10 +386,12 @@ export default function ListingsPage() {
                   <Input
                     id="developer"
                     value={editingProperty.developer}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      developer: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        developer: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -373,10 +399,12 @@ export default function ListingsPage() {
                   <Input
                     id="configuration"
                     value={editingProperty.configuration}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      configuration: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        configuration: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -385,10 +413,12 @@ export default function ListingsPage() {
                     id="beds"
                     type="number"
                     value={editingProperty.beds}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      beds: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        beds: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -397,10 +427,12 @@ export default function ListingsPage() {
                     id="baths"
                     type="number"
                     value={editingProperty.baths}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      baths: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        baths: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -409,10 +441,12 @@ export default function ListingsPage() {
                     id="garages"
                     type="number"
                     value={editingProperty.garages}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      garages: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        garages: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -420,10 +454,12 @@ export default function ListingsPage() {
                   <Input
                     id="status"
                     value={editingProperty.status}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      status: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        status: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -431,10 +467,12 @@ export default function ListingsPage() {
                   <Input
                     id="built_up_area"
                     value={editingProperty.built_up_area}
-                    onChange={(e) => setEditingProperty({
-                      ...editingProperty,
-                      built_up_area: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingProperty({
+                        ...editingProperty,
+                        built_up_area: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -443,10 +481,12 @@ export default function ListingsPage() {
                 <Textarea
                   id="description"
                   value={editingProperty.description}
-                  onChange={(e) => setEditingProperty({
-                    ...editingProperty,
-                    description: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setEditingProperty({
+                      ...editingProperty,
+                      description: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -454,10 +494,12 @@ export default function ListingsPage() {
                 <Input
                   id="video_url"
                   value={editingProperty.video_url ?? ""}
-                  onChange={(e) => setEditingProperty({
-                    ...editingProperty,
-                    video_url: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setEditingProperty({
+                      ...editingProperty,
+                      video_url: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -472,7 +514,7 @@ export default function ListingsPage() {
                           newAmenities[index] = e.target.value;
                           setEditingProperty({
                             ...editingProperty,
-                            amenities: newAmenities
+                            amenities: newAmenities,
                           });
                         }}
                         placeholder="Enter amenity"
@@ -485,7 +527,9 @@ export default function ListingsPage() {
                         onClick={() => {
                           setEditingProperty({
                             ...editingProperty,
-                            amenities: editingProperty.amenities.filter((_, i) => i !== index)
+                            amenities: editingProperty.amenities.filter(
+                              (_, i) => i !== index
+                            ),
                           });
                         }}
                       >
@@ -500,7 +544,7 @@ export default function ListingsPage() {
                   onClick={() => {
                     setEditingProperty({
                       ...editingProperty,
-                      amenities: [...editingProperty.amenities, '']
+                      amenities: [...editingProperty.amenities, ""],
                     });
                   }}
                   className="mt-2"
@@ -532,31 +576,32 @@ export default function ListingsPage() {
                   ))}
                 </div>
 
-                {editingProperty.newImages && editingProperty.newImages?.length > 0 && (
-                  <>
-                    <Label>New Images</Label>
-                    <div className="grid grid-cols-3 gap-4 mb-4">
-                      {editingProperty.newImages.map((image, index) => (
-                        <div key={index} className="relative aspect-square">
-                          <img
-                            src={image.preview}
-                            alt={`New upload ${index + 1}`}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2"
-                            onClick={() => removeNewImage(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
+                {editingProperty.newImages &&
+                  editingProperty.newImages?.length > 0 && (
+                    <>
+                      <Label>New Images</Label>
+                      <div className="grid grid-cols-3 gap-4 mb-4">
+                        {editingProperty.newImages.map((image, index) => (
+                          <div key={index} className="relative aspect-square">
+                            <img
+                              src={image.preview}
+                              alt={`New upload ${index + 1}`}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-2 right-2"
+                              onClick={() => removeNewImage(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
 
                 <Input
                   type="file"
@@ -570,7 +615,7 @@ export default function ListingsPage() {
                 <Label htmlFor="brochure">Brochure</Label>
                 {editingProperty.brochure && (
                   <div className="flex items-center gap-2 mb-2">
-                    <a 
+                    <a
                       href={editingProperty.brochure}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -600,12 +645,16 @@ export default function ListingsPage() {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete {propertyToDelete?.name}. This action cannot be undone.
+              This will permanently delete {propertyToDelete?.name}. This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
