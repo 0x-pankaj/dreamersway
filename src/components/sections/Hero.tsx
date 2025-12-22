@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const images = [
   "https://images.unsplash.com/photo-1588261728509-45dbee85ae7c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&fm=jpg&q=60&w=3000",
@@ -55,12 +56,14 @@ export function Hero() {
         <p className="text-xl md:text-2xl font-light mb-4 opacity-90">
           SQUARE YOUR DREAMS
         </p>
-        <Button
-          size="lg"
-          className="bg-sky-400 hover:bg-blue-800 text-white px-8 py-3 text-lg"
-        >
-          Explore Properties
-        </Button>
+        <Link href="/properties">
+          <Button
+            size="lg"
+            className="bg-sky-400 hover:bg-blue-800 text-white px-8 py-3 text-lg"
+          >
+            Explore Properties
+          </Button>
+        </Link>
       </div>
     </section>
   );
