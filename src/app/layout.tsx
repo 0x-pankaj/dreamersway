@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import ClientBody from "./ClientBody";
 import { Space_Grotesk } from "next/font/google";
-import { ThemeProvider } from "@/components/ThemeProvider";
+// import { ThemeProvider } from "@/components/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,14 +42,14 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ClientBody>{children}</ClientBody>
-        </ThemeProvider>
+        {/* <ThemeProvider */}
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+        {/* > */}
+        <ClientBody>{children}</ClientBody>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );
