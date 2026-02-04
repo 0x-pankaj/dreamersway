@@ -35,7 +35,7 @@ export const HeroHighlight = ({
   return (
     <div
       className={cn(
-        "relative h-screen flex items-center bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 justify-center w-full group",
+        "relative min-h-screen flex items-center bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 justify-center w-full group",
         containerClassName
       )}
       onMouseMove={handleMouseMove}

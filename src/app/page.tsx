@@ -55,9 +55,11 @@ export default async function Home() {
       <Navigation />
       <main className="flex-1 relative z-10">
         {/* Enhanced Hero Section */}
-        <HeroHighlight className="relative h-screen flex items-center justify-center overflow-hidden">
+        <HeroHighlight
+          containerClassName="items-start pt-28 md:pt-0 md:items-center"
+          className="relative min-h-screen flex items-center justify-center overflow-hidden">
           {/* Content */}
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-48 pb-32 text-center z-10">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-32 lg:py-48 text-center z-10 flex flex-col justify-center h-full">
             <div className="space-y-8">
               {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-full text-sm font-bold shadow-2xl mb-6">
@@ -121,7 +123,7 @@ export default async function Home() {
         </HeroHighlight>
 
         {/* Notices Section */}
-        <section className="relative -mt-16 z-20 px-4 md:px-0">
+        <section className="relative z-20 px-4 md:px-0 py-12 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
           <div className="max-w-7xl mx-auto">
             <NoticeList notices={notices} compact={true} />
           </div>
@@ -193,7 +195,7 @@ export default async function Home() {
               <h2 className="text-4xl md:text-5xl font-black mb-6">
                 Why Students Choose
                 <span className="block bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent mt-2">
-                  MetroSquare
+                  Dreamers Way
                 </span>
               </h2>
               <p className="text-xl text-gray-300 max-w-2xl mx-auto">

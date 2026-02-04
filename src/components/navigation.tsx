@@ -54,7 +54,7 @@ export function Navigation() {
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href === "/#contact") return false;
+    if (href === "/contact") return false;
     return pathname.startsWith(href);
   };
 
@@ -66,7 +66,7 @@ export function Navigation() {
       {/* Main Navigation */}
       <nav className={`bg-white/95 dark:bg-black/95 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800 transition-shadow duration-300 ${scrolled ? 'shadow-md dark:shadow-gray-900/50' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-18 py-3">
+          <div className="flex justify-between items-center min-h-[4.5rem] py-2">
             {/* Logo */}
             <div className="flex items-center">
               <Link
@@ -79,7 +79,7 @@ export function Navigation() {
                   height={120}
                   alt="DWC Logo"
                   priority
-                  className="h-12 w-auto dark:hidden"
+                  className="h-10 w-auto lg:h-12 max-w-[200px] object-contain dark:hidden"
                 />
                 <Image
                   src="/dwc_logo.png"
@@ -87,7 +87,7 @@ export function Navigation() {
                   height={120}
                   alt="DWC Logo"
                   priority
-                  className="h-12 w-auto hidden dark:block"
+                  className="h-10 w-auto lg:h-12 max-w-[200px] object-contain hidden dark:block"
                 />
               </Link>
             </div>
