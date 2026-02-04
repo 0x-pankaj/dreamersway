@@ -91,9 +91,11 @@ export default function AdminCollegesPage() {
                                     </TableCell>
                                     <TableCell className="text-right gap-2">
                                         <div className="flex justify-end gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600">
-                                                <Edit className="w-4 h-4" />
-                                            </Button>
+                                            <Link href={`/admin/colleges/${college.id}`}>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600">
+                                                    <Edit className="w-4 h-4" />
+                                                </Button>
+                                            </Link>
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600" onClick={() => deleteCollege(college.id)}>
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>

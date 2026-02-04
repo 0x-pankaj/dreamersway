@@ -12,49 +12,55 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Trash2, Plus } from 'lucide-react';
 import ImageUpload from './ImageUpload';
 
-export default function CollegeForm() {
+import { College } from '@/types';
+
+interface CollegeFormProps {
+    initialData?: College | null;
+}
+
+export default function CollegeForm({ initialData }: CollegeFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
-        address: '',
-        affiliation: '',
-        college_type: 'Private',
-        cover_image_url: '',
-        logo_url: '',
-        website_url: '',
-        contact_email: '',
-        contact_phone: '',
-        established_year: new Date().getFullYear(),
-        bed_capacity: 0,
-        hospital_address: '',
-        description: '',
-        is_featured: false,
-        facilities: [] as string[],
+        name: initialData?.name || '',
+        address: initialData?.address || '',
+        affiliation: initialData?.affiliation || '',
+        college_type: initialData?.college_type || 'Private',
+        cover_image_url: initialData?.cover_image_url || '',
+        logo_url: initialData?.logo_url || '',
+        website_url: initialData?.website_url || '',
+        contact_email: initialData?.contact_email || '',
+        contact_phone: initialData?.contact_phone || '',
+        established_year: initialData?.established_year ? parseInt(initialData.established_year) : new Date().getFullYear(),
+        bed_capacity: initialData?.bed_capacity ? parseInt(initialData.bed_capacity) : 0,
+        hospital_address: initialData?.hospital_address || '',
+        description: initialData?.description || '',
+        is_featured: initialData?.is_featured || false,
+        facilities: initialData?.facilities || [] as string[],
         facilityInput: '',
 
         // Rich Data
-        recognised_by: [] as string[],
+        recognised_by: initialData?.recognised_by || [] as string[],
         recognisedInput: '',
 
-        highlights: [] as string[],
+        highlights: initialData?.highlights || [] as string[],
         highlightInput: '',
 
-        nearest_borders: [] as { name: string; distance: string }[],
+        nearest_borders: initialData?.nearest_borders || [] as { name: string; distance: string }[],
         borderName: '',
         borderDist: '',
 
-        access_modes: [] as { mode: string; description: string }[],
+        access_modes: initialData?.access_modes || [] as { mode: string; description: string }[],
         accessMode: '',
         accessDesc: '',
 
-        programs_bachelor: [] as string[],
+        programs_bachelor: initialData?.programs_bachelor || [] as string[],
         programBachInput: '',
 
-        programs_pg: [] as string[],
+        programs_pg: initialData?.programs_pg || [] as string[],
         programPgInput: '',
 
-        additional_info: ''
+        additional_info: initialData?.additional_info || ''
     });
 
     // Helper handling
@@ -129,8 +135,18 @@ export default function CollegeForm() {
                 bed_capacity: submitData.bed_capacity.toString()
             };
 
-            const { error } = await supabase.from('colleges').insert([finalData]);
-            if (error) throw error;
+            if (initialData?.id) {
+                // Update
+                const { error } = await supabase
+                    .from('colleges')
+                    .update(finalData)
+                    .eq('id', initialData.id);
+                if (error) throw error;
+            } else {
+                // Insert
+                const { error } = await supabase.from('colleges').insert([finalData]);
+                if (error) throw error;
+            }
 
             router.push('/admin/colleges');
             router.refresh();
@@ -380,7 +396,7 @@ export default function CollegeForm() {
 
             <div className="flex justify-end gap-4 pb-12">
                 <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-                <Button type="submit" disabled={loading} size="lg">{loading ? 'Saving...' : 'Create College'}</Button>
+                <Button type="submit" disabled={loading} size="lg">{loading ? 'Saving...' : (initialData ? 'Update College' : 'Create College')}</Button>
             </div>
         </form>
     );
