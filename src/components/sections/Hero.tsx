@@ -4,11 +4,12 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const images = [
-  "https://images.unsplash.com/photo-1588261728509-45dbee85ae7c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&fm=jpg&q=60&w=3000",
-  "https://images.unsplash.com/photo-1486325212027-8081e485255e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3000&q=60",
-  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3000&q=60",
+  "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?q=80&w=2982&auto=format&fit=crop", // Medical building
+  "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2982&auto=format&fit=crop", // Lab/Research
+  "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?q=80&w=2982&auto=format&fit=crop", // Students
 ];
 
 export function Hero() {
@@ -19,7 +20,7 @@ export function Hero() {
       setCurrentImageIndex((prevIndex) =>
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
-    }, 6000); // Change image every 6 seconds
+    }, 6000);
 
     return () => clearInterval(interval);
   }, []);
@@ -30,9 +31,8 @@ export function Hero() {
       {images.map((image, index) => (
         <div
           key={index}
-          className={`absolute inset-0 z-0 transition-opacity duration-500 ease-linear ${
-            index === currentImageIndex ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 z-0 transition-opacity duration-1000 ease-in-out ${index === currentImageIndex ? "opacity-100" : "opacity-0"
+            }`}
         >
           <Image
             src={image}
@@ -41,29 +41,40 @@ export function Hero() {
             className="object-cover"
             priority={index === 0}
           />
-          <div className="absolute inset-0 bg-blue-400/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a213f]/90 to-[#0a213f]/40" />
         </div>
       ))}
 
       {/* Content */}
-      <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-        <h1 className="text-4xl lg:text-8xl font-light tracking-tight mb-6 text-[#0a213f] font-mont">
-          <span className="font-semibold">METRO</span>
-          SQUARE REALTY
-          {/* <span className='text-blue-500 block '>
-          </span> */}
-        </h1>
-        <p className="text-xl md:text-2xl font-light mb-4 opacity-90">
-          SQUARE YOUR DREAMS
-        </p>
-        <Link href="/properties">
-          <Button
-            size="lg"
-            className="bg-sky-400 hover:bg-blue-800 text-white px-8 py-3 text-lg"
-          >
-            Explore Properties
-          </Button>
-        </Link>
+      <div className="relative z-10 text-center md:text-left text-white max-w-7xl mx-auto px-4 w-full">
+        <div className="max-w-3xl">
+          <h1 className="text-4xl lg:text-7xl font-bold tracking-tight mb-6 font-mont leading-tight">
+            Building Future <br />
+            <span className="text-primary">Medical Professionals</span>
+          </h1>
+          <p className="text-lg md:text-xl font-light mb-8 opacity-90 max-w-2xl leading-relaxed">
+            Your trusted gateway to top Medical Colleges in Nepal. We provide expert guidance, comprehensive information, and support for your medical education journey.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link href="/colleges">
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-full font-semibold w-full sm:w-auto"
+              >
+                Find Colleges <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent border-white text-white hover:bg-white hover:text-gray-900 px-8 py-6 text-lg rounded-full font-semibold w-full sm:w-auto"
+              >
+                Learn More
+              </Button>
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );

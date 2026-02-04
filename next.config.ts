@@ -12,6 +12,7 @@ const nextConfig = {
       "www.stonewallco.com",
       "www.ntc.edu",
       "cdn.prod.website-files.com",
+      "jeexbqadowmheiwhzcay.supabase.co",
     ],
     remotePatterns: [
       {
@@ -47,6 +48,11 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "cdn.prod.website-files.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "jeexbqadowmheiwhzcay.supabase.co",
         pathname: "/**",
       },
     ],

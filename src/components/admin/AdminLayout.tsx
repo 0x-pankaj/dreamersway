@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { PlusCircle,List, Menu, X, LogOut } from 'lucide-react';
+import { PlusCircle, List, Menu, X, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AdminLayoutProps {
@@ -28,15 +28,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-black">
       {/* Navbar */}
-      <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
+      <nav className="fixed top-0 z-50 w-full bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <button
                 onClick={() => setSidebarOpen(!isSidebarOpen)}
-                className="p-2 rounded-lg hover:bg-gray-100"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-200"
               >
                 {isSidebarOpen ? (
                   <X className="w-6 h-6" />
@@ -44,9 +44,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   <Menu className="w-6 h-6" />
                 )}
               </button>
-              <span className="ml-3 text-xl font-semibold">Metrosquare Admin</span>
+              <span className="ml-3 text-xl font-semibold dark:text-white">Metrosquare Admin</span>
             </div>
-            <button className="flex items-center p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100">
+            <button className="flex items-center p-2 text-sm text-gray-500 dark:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900">
               <LogOut className="w-5 h-5 mr-2" />
               Logout
             </button>
@@ -57,7 +57,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200",
+          "fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800",
           !isSidebarOpen && "-translate-x-full"
         )}
       >
@@ -70,8 +70,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "flex items-center p-3 text-gray-900 rounded-lg hover:bg-gray-100",
-                      pathname === item.href && "bg-sky-50 text-sky-600"
+                      "flex items-center p-3 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors",
+                      pathname === item.href && "bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400"
                     )}
                   >
                     <Icon className="w-5 h-5" />

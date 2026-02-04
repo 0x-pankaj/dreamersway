@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import ClientBody from "./ClientBody";
+import { Space_Grotesk } from "next/font/google";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,9 +20,14 @@ const montserrat = Montserrat({
   subsets: ["latin"],
 });
 
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "MetroSquare",
-  description: "Best realstate agent out there",
+  title: "Dreamer's Way Consultancy",
+  description: "Dreamers Way Consultancy; Your Medical Journey, Our Mission"
 };
 
 export default function RootLayout({
@@ -29,12 +36,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html 
-      lang="en" 
-      className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable}`}
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${spaceGrotesk.variable}`}
+      suppressHydrationWarning
     >
-      <body suppressHydrationWarning className="antialiased">
-        <ClientBody>{children}</ClientBody>
+      <body className="antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClientBody>{children}</ClientBody>
+        </ThemeProvider>
       </body>
     </html>
   );

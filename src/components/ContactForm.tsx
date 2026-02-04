@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 interface ContactFormData {
   name: string;
-  email?: string;
+  email: string;
   phone: string;
+  subject: string;
   message: string;
-  preferredBudget: string;
-  preferredLocation: string;
 }
 
 export function ContactForm() {
@@ -21,9 +21,8 @@ export function ContactForm() {
     name: '',
     email: '',
     phone: '',
-    message: '',
-    preferredBudget: '',
-    preferredLocation: ''
+    subject: '',
+    message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,28 +31,19 @@ export function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const { error } = await supabase.from('contacts').insert([formData]);
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form');
-      }
+      if (error) throw error;
 
       // Reset form after successful submission
       setFormData({
         name: '',
         email: '',
         phone: '',
-        message: '',
-        preferredBudget: '',
-        preferredLocation: ''
+        subject: '',
+        message: ''
       });
-      alert('Message sent successfully!');
+      alert('Message sent successfully! We will get back to you soon.');
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('Failed to send message. Please try again.');
@@ -73,67 +63,70 @@ export function ContactForm() {
   return (
     <section className="">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-       
-
         <div className="max-w-2xl mx-auto">
-          <Card className="p-6">
-            <h3 className="text-xl font-semibold mb-4">Contact Metrosquare</h3>
-            <div className="space-y-4 mb-6">
+          <Card className="p-8 border-gray-100 shadow-lg bg-white/50 backdrop-blur-sm">
+            <h3 className="text-2xl font-bold mb-6 text-gray-900 font-mont">Contact Us</h3>
+            <div className="space-y-4 mb-8">
               <div className="flex items-center text-gray-600">
-                <Phone className="h-5 w-5 mr-2" />
-                <span>+91 6364 421 053</span>
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                  <Phone className="h-5 w-5 text-primary" />
+                </div>
+                <span className="font-medium">+977 9819602000</span>
               </div>
               <div className="flex items-center text-gray-600">
-                <Mail className="h-5 w-5 mr-2" />
-                <span>office@metrosquare.co.in</span>
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                  <Mail className="h-5 w-5 text-primary" />
+                </div>
+                <span className="font-medium">info@godreamersway.com</span>
               </div>
             </div>
             <form className="space-y-4" onSubmit={handleSubmit}>
-              <Input
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Your Name"
-                required
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Your Name"
+                  required
+                  className="bg-white"
+                />
+                <Input
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Your Phone"
+                  required
+                  className="bg-white"
+                />
+              </div>
               <Input
                 name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Your Email"
+                className="bg-white"
               />
               <Input
-                name="phone"
-                type="tel"
-                value={formData.phone}
+                name="subject"
+                value={formData.subject}
                 onChange={handleChange}
-                placeholder="Your Phone"
-                required
+                placeholder="Subject (e.g. Admission Enquiry)"
+                className="bg-white"
               />
               <Textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Your Message"
+                placeholder="How can we help you?"
                 rows={4}
                 required
+                className="bg-white"
               />
-              <Input
-                name="preferredBudget"
-                value={formData.preferredBudget}
-                onChange={handleChange}
-                placeholder="Preferred Budget"
-              />
-              <Input
-                name="preferredLocation"
-                value={formData.preferredLocation}
-                onChange={handleChange}
-                placeholder="Preferred Location"
-              />
-              <Button 
-                type="submit" 
-                className="w-full bg-sky-400 hover:bg-blue-800 text-white"
+              <Button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Sending...' : 'Send Message'}
