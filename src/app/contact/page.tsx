@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { Navigation } from "@/components/navigation";
 import Footer from "@/components/sections/Footer";
 import { ContactForm } from "@/components/ContactForm";
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description: "Get in touch with Dreamer's Way Consultancy. Have questions about medical colleges in Nepal? We'd love to hear from you.",
+};
 
 export default function ContactPage() {
     return (
@@ -9,7 +15,7 @@ export default function ContactPage() {
             <main className="flex-1 pt-40 pb-12 md:pt-48 md:pb-24 relative z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
-                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Get in Touch</h1>
+                        <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 font-mont">Get in Touch</h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                             Have questions? We'd love to hear from you. Send us a message or visit our location.
                         </p>
@@ -44,7 +50,7 @@ export default function ContactPage() {
                                 {/* Address Overlay */}
                                 <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-lg border border-gray-100">
                                     <h3 className="font-bold text-gray-900">Our Location</h3>
-                                    <p className="text-sm text-gray-600">27°41'16.0"N 85°21'00.0"E</p>
+                                    <p className="text-sm text-gray-600">Kathmandu, Nepal</p>
                                 </div>
                             </div>
                         </div>

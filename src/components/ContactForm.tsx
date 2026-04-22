@@ -68,20 +68,19 @@ export function ContactForm() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
           <Card className="p-8 border-gray-100 shadow-lg bg-white/50 backdrop-blur-sm">
-            <h3 className="text-2xl font-bold mb-6 text-gray-900 font-mont">Contact Us</h3>
             <div className="space-y-4 mb-8">
-              <div className="flex items-center text-gray-600">
+              <a href="tel:+9779819602000" className="flex items-center text-gray-600 hover:text-primary transition-colors">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
                   <Phone className="h-5 w-5 text-primary" />
                 </div>
                 <span className="font-medium">+977 9819602000</span>
-              </div>
-              <div className="flex items-center text-gray-600">
+              </a>
+              <a href="mailto:info@godreamersway.com" className="flex items-center text-gray-600 hover:text-primary transition-colors">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
                   <Mail className="h-5 w-5 text-primary" />
                 </div>
                 <span className="font-medium">info@godreamersway.com</span>
-              </div>
+              </a>
             </div>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

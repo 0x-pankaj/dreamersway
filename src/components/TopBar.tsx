@@ -17,7 +17,7 @@ export default function TopBar() {
                     {/* Right side - Contact info */}
                     <div className="flex items-center gap-2 md:gap-6 text-xs md:text-sm whitespace-nowrap font-medium">
                         <a
-                            href="tel:+9779817820096"
+                            href="tel:+9779819602000"
                             className="flex items-center gap-1.5 hover:text-blue-800 dark:hover:text-amber-200 transition-colors"
                         >
                             <Phone className="w-3.5 h-3.5" />
@@ -25,7 +25,7 @@ export default function TopBar() {
                         </a>
 
                         <a
-                            href="mailto:info@metrosquare.com"
+                            href="mailto:info@godreamersway.com"
                             className="flex items-center gap-1.5 hover:text-blue-800 dark:hover:text-amber-200 transition-colors"
                         >
                             <Mail className="w-3.5 h-3.5" />

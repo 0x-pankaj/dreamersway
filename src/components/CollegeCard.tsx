@@ -10,7 +10,7 @@ interface CollegeCardProps {
 
 export function CollegeCard({ college }: CollegeCardProps) {
     return (
-        <div className="group bg-white dark:bg-black rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:border-primary/20 hover:shadow-xl transition-all duration-300">
+        <div className="group bg-white dark:bg-black rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:border-primary/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full">
             <div className="relative h-64 overflow-hidden">
                 <Image
                     src={college.cover_image_url || '/placeholder-college.jpg'}
@@ -38,18 +38,18 @@ export function CollegeCard({ college }: CollegeCardProps) {
                 )}
             </div>
 
-            <div className="pt-8 pb-6 px-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+            <div className="pt-8 pb-6 px-6 flex flex-col flex-1">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-primary transition-colors font-mont">
                     {college.name}
                 </h3>
 
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-4">
                     <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
-                        <MapPin className="w-4 h-4 mr-2 text-primary" />
+                        <MapPin className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                         <span className="line-clamp-1">{college.address}</span>
                     </div>
                     <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
-                        <Building2 className="w-4 h-4 mr-2 text-primary" />
+                        <Building2 className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                         <span className="line-clamp-1">{college.affiliation}</span>
                     </div>
                     {college.bed_capacity && (
@@ -59,7 +59,7 @@ export function CollegeCard({ college }: CollegeCardProps) {
                     )}
                 </div>
 
-                <div className="flex items-center justify-between mt-auto">
+                <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
                     <div className="flex flex-wrap gap-2 mb-4">
                         {college.facilities && college.facilities.length > 0 && (
                             <>
@@ -75,8 +75,8 @@ export function CollegeCard({ college }: CollegeCardProps) {
                         )}
                     </div>
 
-                    <Link href={`/colleges/${college.id}`}>
-                        <Button variant="outline" size="sm" className="border-primary/30 text-primary hover:bg-primary hover:text-white">
+                    <Link href={`/colleges/${college.id}`} className="block">
+                        <Button variant="outline" size="sm" className="w-full border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300">
                             View Details
                         </Button>
                     </Link>

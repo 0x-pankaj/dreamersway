@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import { Navigation } from "@/components/navigation";
-import { TeamMember } from "@/components/TeamMember";
 import Footer from "@/components/sections/Footer";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn about Dreamer's Way Consultancy - your trusted partner in medical education consultancy in Nepal.",
+};
 
 const teamMembers = [
   {
@@ -41,13 +46,13 @@ export default function AboutPage() {
 
       <main className="pt-28">
         {/* Page Header */}
-        <section className="bg-gradient-to-r from-sky-600 to-sky-800 py-16">
+        <section className="bg-primary py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-4xl md:text-5xl font-black text-primary-foreground mb-4 font-mont">
                 About Us
               </h1>
-              <p className="text-sky-100 text-lg max-w-2xl mx-auto">
+              <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
                 Your trusted partner in medical education consultancy
               </p>
             </div>
@@ -69,16 +74,16 @@ export default function AboutPage() {
                   />
                 </div>
                 {/* Decorative elements */}
-                <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-sky-100 rounded-2xl -z-10"></div>
-                <div className="absolute -top-6 -left-6 w-24 h-24 bg-sky-600/20 rounded-2xl -z-10"></div>
+                <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/10 rounded-2xl -z-10"></div>
+                <div className="absolute -top-6 -left-6 w-24 h-24 bg-primary/15 rounded-2xl -z-10"></div>
               </div>
 
               {/* Right - About Text */}
               <div>
-                <span className="inline-block px-4 py-1.5 bg-sky-100 text-sky-700 rounded-full text-sm font-semibold mb-4">
+                <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
                   ABOUT US
                 </span>
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 font-mont">
                   Dreamers Way Consultancy
                 </h2>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
@@ -104,15 +109,15 @@ export default function AboutPage() {
                 {/* Stats */}
                 {/* <div className="grid grid-cols-3 gap-6 mt-8 pt-8 border-t border-gray-100">
                   <div>
-                    <div className="text-3xl font-bold text-sky-600">3+</div>
+                    <div className="text-3xl font-bold text-primary">3+</div>
                     <div className="text-sm text-gray-500">Years Experience</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold text-sky-600">500+</div>
+                    <div className="text-3xl font-bold text-primary">500+</div>
                     <div className="text-sm text-gray-500">Students Placed</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold text-sky-600">15+</div>
+                    <div className="text-3xl font-bold text-primary">15+</div>
                     <div className="text-sm text-gray-500">Partner Colleges</div>
                   </div>
                 </div> */}
@@ -127,10 +132,10 @@ export default function AboutPage() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left - Message Text */}
               <div className="order-2 lg:order-1">
-                <span className="inline-block px-4 py-1.5 bg-sky-100 text-sky-700 rounded-full text-sm font-semibold mb-4">
+                <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
                   MESSAGE FROM MANAGING DIRECTOR
                 </span>
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 font-mont">
                   Welcome to Dreamers Way
                 </h2>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
@@ -162,7 +167,7 @@ export default function AboutPage() {
                 {/* Director Info */}
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <p className="font-semibold text-gray-900">Warm regards,</p>
-                  <p className="text-xl font-bold text-sky-600 mt-2">Anand Thakur</p>
+                  <p className="text-xl font-bold text-primary mt-2">Anand Thakur</p>
                   <p className="text-gray-500">Managing Director</p>
                   <p className="text-gray-500 text-sm">Dreamers Way Consultancy</p>
                 </div>
@@ -179,8 +184,8 @@ export default function AboutPage() {
                   />
                 </div>
                 {/* Decorative elements */}
-                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-sky-600/10 rounded-2xl -z-10"></div>
-                <div className="absolute -top-6 -right-6 w-24 h-24 bg-sky-100 rounded-2xl -z-10"></div>
+                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/10 rounded-2xl -z-10"></div>
+                <div className="absolute -top-6 -right-6 w-24 h-24 bg-primary/10 rounded-2xl -z-10"></div>
               </div>
             </div>
           </div>
@@ -190,10 +195,10 @@ export default function AboutPage() {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <span className="inline-block px-4 py-1.5 bg-sky-100 text-sky-700 rounded-full text-sm font-semibold mb-4">
+              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
                 WHY CHOOSE US
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 font-mont">
                 What Sets Us Apart
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -224,7 +229,7 @@ export default function AboutPage() {
                   description: "Clear information about fees, eligibility, and procedures"
                 }
               ].map((item, index) => (
-                <div key={index} className="text-center p-6 rounded-2xl bg-white border border-gray-100 hover:shadow-lg hover:border-sky-100 transition-all">
+                <div key={index} className="text-center p-6 rounded-2xl bg-white border border-gray-100 hover:shadow-lg hover:border-primary/20 transition-all">
                   <div className="text-4xl mb-4">{item.icon}</div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
                   <p className="text-gray-600 text-sm">{item.description}</p>

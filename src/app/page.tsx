@@ -8,17 +8,16 @@ import { CollegeCard } from "@/components/CollegeCard";
 import { College, Notice } from "@/types";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, GraduationCap, Building2, Users, Award, TrendingUp, CheckCircle2 } from "lucide-react";
+import { ArrowRight, GraduationCap, Building2, Users, Award, TrendingUp, CheckCircle2, AlertCircle } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
-import Image from "next/image";
+import TestimonialsSection from "@/components/TestimonialsSection";
 import { HeroHighlight } from "@/components/ui/hero-highlight";
 
-export const revalidate = 0; // Disable static caching for now to show updates
+export const revalidate = 0;
 
 export default async function Home() {
-
-  // Fetch Colleges
   let colleges: College[] = [];
+  let collegesError = false;
   try {
     const { data, error } = await supabase
       .from('colleges')
@@ -27,13 +26,17 @@ export default async function Home() {
       .limit(3);
 
     if (data) colleges = data;
-    if (error) console.error("Error fetching colleges:", error);
+    if (error) {
+      console.error("Error fetching colleges:", error);
+      collegesError = true;
+    }
   } catch (err) {
     console.error("Supabase fetch error:", err);
+    collegesError = true;
   }
 
-  // Fetch Notices
   let notices: Notice[] = [];
+  let noticesError = false;
   try {
     const { data, error } = await supabase
       .from('notices')
@@ -42,8 +45,13 @@ export default async function Home() {
       .limit(5);
 
     if (data) notices = data;
+    if (error) {
+      console.error("Error fetching notices:", error);
+      noticesError = true;
+    }
   } catch (err) {
     console.error("Supabase fetch notices error:", err);
+    noticesError = true;
   }
 
   return (
@@ -62,13 +70,13 @@ export default async function Home() {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-32 lg:py-48 text-center z-10 flex flex-col justify-center h-full">
             <div className="space-y-8">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-full text-sm font-bold shadow-2xl mb-6">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-full text-sm font-bold shadow-2xl mb-6 animate-fade-in-up">
                 <GraduationCap className="w-5 h-5" />
-                Nepal's Premier Medical College Platform
+                Nepal&apos;s Premier Medical College Platform
               </div>
 
               {/* Heading */}
-              <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight drop-shadow-2xl">
+              <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight drop-shadow-2xl font-mont">
                 Your Journey to
                 <span className="block bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 bg-clip-text text-transparent mt-2">
                   Medical Excellence
@@ -78,72 +86,54 @@ export default async function Home() {
 
               {/* Description */}
               <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto font-medium leading-relaxed drop-shadow-lg">
-                Discover Nepal's top medical colleges with comprehensive details on programs, facilities, and admissions - all in one place.
+                Discover Nepal&apos;s top medical colleges with comprehensive details on programs, facilities, and admissions — all in one place.
               </p>
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
                 <Link href="/colleges">
-                  <Button size="lg" className="bg-white text-primary hover:bg-gray-100 font-bold text-lg px-8 py-6 rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 group">
+                  <Button size="lg" className="bg-white text-primary hover:bg-gray-100 font-bold text-lg px-8 py-6 rounded-xl shadow-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 hover:scale-105 group">
                     Explore Colleges
                     <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link href="/notices">
-                  <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary font-bold text-lg px-8 py-6 rounded-xl backdrop-blur-sm bg-white/10 shadow-xl transition-all duration-300 hover:scale-105">
+                  <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary font-bold text-lg px-8 py-6 rounded-xl backdrop-blur-sm bg-white/10 shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]">
                     Latest Notices
                   </Button>
                 </Link>
               </div>
-
-              {/* Stats */}
-              {/* <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto pt-16">
-                <div className="text-center">
-                  <div className="text-4xl md:text-5xl font-black text-white mb-2">{colleges.length}+</div>
-                  <div className="text-white/80 font-semibold">Featured Colleges</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl md:text-5xl font-black text-white mb-2">50K+</div>
-                  <div className="text-white/80 font-semibold">Students Helped</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl md:text-5xl font-black text-white mb-2">99%</div>
-                  <div className="text-white/80 font-semibold">Success Rate</div>
-                </div>
-              </div> */}
             </div>
           </div>
-
-          {/* Wave Separator */}
-          {/* <div className="absolute bottom-0 left-0 right-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
-              <path fill="#ffffff" fillOpacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-            </svg>
-          </div> */}
         </HeroHighlight>
 
         {/* Notices Section */}
         <section className="relative z-20 px-4 md:px-0 py-12 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
           <div className="max-w-7xl mx-auto">
-            <NoticeList notices={notices} compact={true} />
+            {noticesError ? (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                <p className="text-red-700 dark:text-red-300 text-sm">Unable to load notices at the moment. Please try again later.</p>
+              </div>
+            ) : (
+              <NoticeList notices={notices} compact={true} />
+            )}
           </div>
         </section>
 
         {/* Featured Colleges Section */}
         <section className="py-24 relative overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 dark:from-black dark:via-gray-900/40 dark:to-black">
-          {/* Decorative circles */}
           <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="text-center mb-16">
-              {/* Section Badge */}
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-2 rounded-full text-sm font-bold mb-6">
                 <Building2 className="w-4 h-4" />
                 Top Institutions
               </div>
 
-              <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">
+              <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 font-mont">
                 Featured Medical Colleges
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
@@ -151,7 +141,13 @@ export default async function Home() {
               </p>
             </div>
 
-            {colleges.length > 0 ? (
+            {collegesError ? (
+              <div className="text-center py-20 bg-red-50 dark:bg-red-900/10 rounded-3xl border border-red-200 dark:border-red-900/30">
+                <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                <p className="text-red-600 dark:text-red-300 text-lg font-medium">Unable to load colleges</p>
+                <p className="text-red-500 dark:text-red-400 text-sm mt-2">Please check your connection and try again later.</p>
+              </div>
+            ) : colleges.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                   {colleges.map((college) => (
@@ -183,7 +179,6 @@ export default async function Home() {
 
         {/* Why Choose Us Section */}
         <section className="py-24 bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black text-white relative overflow-hidden">
-          {/* Animated glow effects */}
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full filter blur-[120px] animate-pulse"></div>
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
@@ -192,7 +187,7 @@ export default async function Home() {
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-black mb-6">
+              <h2 className="text-4xl md:text-5xl font-black mb-6 font-mont">
                 Why Students Choose
                 <span className="block bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent mt-2">
                   Dreamers Way
@@ -227,7 +222,6 @@ export default async function Home() {
                 }
               ].map((feature, index) => (
                 <div key={index} className="group relative">
-                  {/* Gradient border effect */}
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-blue-500 to-purple-500 rounded-3xl opacity-0 group-hover:opacity-100 blur transition duration-500"></div>
                   <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl h-full">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary/20 to-blue-500/20 backdrop-blur-sm rounded-2xl mb-6 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
@@ -244,30 +238,29 @@ export default async function Home() {
           </div>
         </section>
 
+        <TestimonialsSection />
+
         <About />
 
         {/* Contact Section */}
         <div className="py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-black dark:to-gray-900 relative overflow-hidden" id="contact" style={{ scrollMarginTop: "180px" }}>
-          {/* Decorative background elements */}
           <div className="absolute top-10 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">Get in Touch</h2>
+              <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 font-mont">Get in Touch</h2>
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Have questions? We'd love to hear from you. Send us a message or visit our location.
+                Have questions? We&apos;d love to hear from you. Send us a message or visit our location.
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              {/* Contact Form Side */}
               <div className="w-full">
                 <div className="[&>section]:p-0 [&>section>div]:p-0 [&>section>div]:max-w-none [&>section>div>div]:max-w-none">
                   <ContactForm />
                 </div>
               </div>
 
-              {/* Google Map Side */}
               <div className="w-full h-full min-h-[600px] rounded-2xl overflow-hidden shadow-xl border border-white/50 dark:border-gray-800 bg-white/50 dark:bg-black/50 backdrop-blur-sm p-2">
                 <div className="w-full h-full rounded-xl overflow-hidden relative">
                   <iframe
@@ -280,10 +273,9 @@ export default async function Home() {
                     referrerPolicy="no-referrer-when-downgrade"
                   ></iframe>
 
-                  {/* Address Overlay */}
                   <div className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md p-4 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
                     <h3 className="font-bold text-gray-900 dark:text-white">Our Location</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">27°41'16.0"N 85°21'00.0"E</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Kathmandu, Nepal</p>
                   </div>
                 </div>
               </div>

@@ -54,7 +54,6 @@ export function Navigation() {
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href === "/contact") return false;
     return pathname.startsWith(href);
   };
 
@@ -99,7 +98,7 @@ export function Navigation() {
                   key={link.href}
                   href={link.href}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.href)
-                    ? 'text-sky-600 bg-sky-50 dark:bg-sky-900/20'
+                    ? 'text-primary bg-primary/5 dark:bg-primary/10'
                     : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900'
                     }`}
                   onClick={(e) => handleClick(e, link.href)}
@@ -113,7 +112,7 @@ export function Navigation() {
                 href="https://cal.com/pankaj-singh-iqlvyw/15min"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-4 inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm hover:shadow"
+                className="ml-4 inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm hover:shadow"
               >
                 Book Consultation
               </a>
@@ -123,7 +122,7 @@ export function Navigation() {
             <div className="md:hidden flex items-center gap-2">
               <a
                 href="tel:+9779819602000"
-                className="inline-flex items-center justify-center w-10 h-10 bg-sky-600 text-white rounded-lg"
+                className="inline-flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-lg"
               >
                 <Phone className="w-5 h-5" />
               </a>
@@ -145,7 +144,7 @@ export function Navigation() {
                         key={link.href}
                         href={link.href}
                         className={`text-lg py-3 px-4 rounded-lg transition-colors ${isActive(link.href)
-                          ? 'text-sky-600 bg-sky-50 dark:bg-sky-900/20 font-medium'
+                          ? 'text-primary bg-primary/5 dark:bg-primary/10 font-medium'
                           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900'
                           }`}
                         onClick={(e) => handleClick(e, link.href)}
@@ -159,7 +158,7 @@ export function Navigation() {
                         href="https://cal.com/pankaj-singh-iqlvyw/15min"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-lg font-medium transition-colors"
+                        className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-3 rounded-lg font-medium transition-colors"
                       >
                         Book Consultation
                       </a>

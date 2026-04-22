@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Trash2, Plus } from 'lucide-react';
 import ImageUpload from './ImageUpload';
 
-import { College } from '@/types';
+import { College, CollegeType } from '@/types';
 
 interface CollegeFormProps {
     initialData?: College | null;
@@ -203,7 +203,7 @@ export default function CollegeForm({ initialData }: CollegeFormProps) {
 
                 <div className="space-y-2">
                     <Label>Type</Label>
-                    <Select defaultValue={formData.college_type} onValueChange={(v) => setFormData({ ...formData, college_type: v })}>
+                    <Select defaultValue={formData.college_type} onValueChange={(v) => setFormData({ ...formData, college_type: v as CollegeType })}>
                         <SelectTrigger>
                             <SelectValue />
                         </SelectTrigger>

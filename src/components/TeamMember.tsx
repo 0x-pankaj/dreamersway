@@ -23,10 +23,10 @@ export function TeamMember({
   socials,
 }: TeamMemberProps) {
   return (
-    <div className="group bg-white rounded-2xl p-8 border border-gray-100 hover:shadow-xl hover:border-sky-100 transition-all duration-300">
+    <div className="group bg-white rounded-2xl p-8 border border-gray-100 hover:shadow-xl hover:border-primary/20 transition-all duration-300">
       <div className="flex flex-col items-center">
         {/* Profile Image */}
-        <div className="relative w-40 h-40 mb-6 rounded-full overflow-hidden ring-4 ring-gray-50 group-hover:ring-sky-100 transition-all">
+        <div className="relative w-40 h-40 mb-6 rounded-full overflow-hidden ring-4 ring-gray-50 group-hover:ring-primary/20 transition-all">
           <Image
             src={url}
             alt={name}
@@ -38,7 +38,7 @@ export function TeamMember({
         {/* Info */}
         <div className="text-center">
           <h3 className="text-xl font-semibold text-gray-900 mb-1">{name}</h3>
-          <p className="text-sm text-sky-600 font-medium mb-4">{role}</p>
+          <p className="text-sm text-primary font-medium mb-4">{role}</p>
           <p className="text-gray-600 mb-6 text-sm leading-relaxed max-w-xs mx-auto">
             {description}
           </p>

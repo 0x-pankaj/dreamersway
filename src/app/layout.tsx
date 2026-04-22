@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import ClientBody from "./ClientBody";
 import { Space_Grotesk } from "next/font/google";
-// import { ThemeProvider } from "@/components/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,8 +25,18 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Dreamer's Way Consultancy",
-  description: "Dreamers Way Consultancy; Your Medical Journey, Our Mission"
+  title: {
+    default: "Dreamer's Way Consultancy",
+    template: "%s | Dreamer's Way Consultancy",
+  },
+  description: "Dreamers Way Consultancy - Your Medical Journey, Our Mission. Discover Nepal's top medical colleges with comprehensive details on programs, facilities, and admissions.",
+  keywords: ["medical colleges Nepal", "MBBS Nepal", "medical education consultancy", "Nepal medical admission", "Dreamers Way"],
+  authors: [{ name: "Dreamer's Way Consultancy" }],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Dreamer's Way Consultancy",
+  },
 };
 
 export default function RootLayout({
