@@ -1,158 +1,112 @@
 "use client";
 
-import { useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trash2, Plus } from 'lucide-react';
-import ImageUpload from './ImageUpload';
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Trash2, Plus } from "lucide-react";
+import ImageUpload from "./ImageUpload";
+import type { University } from "@/types";
+import { siteConfig } from "@/lib/site-config";
 
-import { College, CollegeType } from '@/types';
-
-interface CollegeFormProps {
-    initialData?: College | null;
+interface Props {
+    initialData?: University | null;
 }
 
-export default function CollegeForm({ initialData }: CollegeFormProps) {
+const slugify = (s: string) =>
+    s.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "");
+
+export default function CollegeForm({ initialData }: Props) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        name: initialData?.name || '',
-        address: initialData?.address || '',
-        affiliation: initialData?.affiliation || '',
-        college_type: initialData?.college_type || 'Private',
-        cover_image_url: initialData?.cover_image_url || '',
-        logo_url: initialData?.logo_url || '',
-        website_url: initialData?.website_url || '',
-        contact_email: initialData?.contact_email || '',
-        contact_phone: initialData?.contact_phone || '',
-        established_year: initialData?.established_year ? parseInt(initialData.established_year) : new Date().getFullYear(),
-        bed_capacity: initialData?.bed_capacity ? parseInt(initialData.bed_capacity) : 0,
-        hospital_address: initialData?.hospital_address || '',
-        description: initialData?.description || '',
-        is_featured: initialData?.is_featured || false,
-        facilities: initialData?.facilities || [] as string[],
-        facilityInput: '',
-
-        // Rich Data
-        recognised_by: initialData?.recognised_by || [] as string[],
-        recognisedInput: '',
-
-        highlights: initialData?.highlights || [] as string[],
-        highlightInput: '',
-
-        nearest_borders: initialData?.nearest_borders || [] as { name: string; distance: string }[],
-        borderName: '',
-        borderDist: '',
-
-        access_modes: initialData?.access_modes || [] as { mode: string; description: string }[],
-        accessMode: '',
-        accessDesc: '',
-
-        programs_bachelor: initialData?.programs_bachelor || [] as string[],
-        programBachInput: '',
-
-        programs_pg: initialData?.programs_pg || [] as string[],
-        programPgInput: '',
-
-        additional_info: initialData?.additional_info || ''
+        name: initialData?.name || "",
+        slug: initialData?.slug || "",
+        country_code: initialData?.country_code || "nepal",
+        stream_codes: initialData?.stream_codes || ["medical"],
+        city: initialData?.city || "",
+        address: initialData?.address || "",
+        hospital_address: initialData?.hospital_address || "",
+        affiliation: initialData?.affiliation || "",
+        university_type: initialData?.university_type || "Private",
+        ranking_text: initialData?.ranking_text || "",
+        cover_image_url: initialData?.cover_image_url || "",
+        logo_url: initialData?.logo_url || "",
+        website_url: initialData?.website_url || "",
+        contact_email: initialData?.contact_email || "",
+        contact_phone: initialData?.contact_phone || "",
+        established_year: initialData?.established_year || "",
+        bed_capacity: initialData?.bed_capacity || "",
+        tuition_range: initialData?.tuition_range || "",
+        eligibility: initialData?.eligibility || "",
+        intake_info: initialData?.intake_info || "",
+        application_deadline: initialData?.application_deadline || "",
+        language_requirements: initialData?.language_requirements || "",
+        scholarship_info: initialData?.scholarship_info || "",
+        description: initialData?.description || "",
+        short_description: initialData?.short_description || "",
+        additional_info: initialData?.additional_info || "",
+        is_featured: initialData?.is_featured ?? false,
+        is_active: initialData?.is_active ?? true,
+        facilities: initialData?.facilities || ([] as string[]),
+        recognised_by: initialData?.recognised_by || ([] as string[]),
+        highlights: initialData?.highlights || ([] as string[]),
+        programs_bachelor: initialData?.programs_bachelor || ([] as string[]),
+        programs_pg: initialData?.programs_pg || ([] as string[]),
+        // helpers
+        facilityInput: "",
+        recognisedInput: "",
+        highlightInput: "",
+        programBachInput: "",
+        programPgInput: "",
     });
 
-    // Helper handling
-    const addItem = (field: 'facilities' | 'recognised_by' | 'highlights' | 'programs_bachelor' | 'programs_pg', inputField: string) => {
-        // @ts-ignore
-        if (formData[inputField].trim()) {
-            setFormData(prev => ({
-                ...prev,
-                // @ts-ignore
-                [field]: [...prev[field], prev[inputField].trim()],
-                [inputField]: ''
-            }));
-        }
-    };
+    type ListField = "facilities" | "recognised_by" | "highlights" | "programs_bachelor" | "programs_pg";
+    type InputField = "facilityInput" | "recognisedInput" | "highlightInput" | "programBachInput" | "programPgInput";
 
-    const removeItem = (field: 'facilities' | 'recognised_by' | 'highlights' | 'programs_bachelor' | 'programs_pg', index: number) => {
-        setFormData(prev => ({
-            ...prev,
-            // @ts-ignore
-            [field]: prev[field].filter((_, i) => i !== index)
+    const addItem = (field: ListField, inputField: InputField) => {
+        const v = (formData[inputField] as string).trim();
+        if (!v) return;
+        setFormData((p) => ({ ...p, [field]: [...(p[field] as string[]), v], [inputField]: "" } as typeof p));
+    };
+    const removeItem = (field: ListField, index: number) =>
+        setFormData((p) => ({ ...p, [field]: (p[field] as string[]).filter((_, i) => i !== index) } as typeof p));
+
+    const toggleStream = (code: string) => {
+        setFormData((p) => ({
+            ...p,
+            stream_codes: p.stream_codes.includes(code)
+                ? p.stream_codes.filter((c) => c !== code)
+                : [...p.stream_codes, code],
         }));
     };
-
-    const addBorder = () => {
-        if (formData.borderName && formData.borderDist) {
-            setFormData(prev => ({
-                ...prev,
-                nearest_borders: [...prev.nearest_borders, { name: prev.borderName, distance: prev.borderDist }],
-                borderName: '',
-                borderDist: ''
-            }));
-        }
-    };
-
-    const addAccess = () => {
-        if (formData.accessMode && formData.accessDesc) {
-            setFormData(prev => ({
-                ...prev,
-                access_modes: [...prev.access_modes, { mode: prev.accessMode, description: prev.accessDesc }],
-                accessMode: '',
-                accessDesc: ''
-            }));
-        }
-    };
-
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
         try {
-            // Remove inputs before sending
-            const {
-                facilityInput, recognisedInput, highlightInput,
-                borderName, borderDist, accessMode, accessDesc,
-                programBachInput, programPgInput,
-                ...submitData
-            } = formData;
-
-            // Generate slug from name
-            const slug = submitData.name
-                .toLowerCase()
-                .trim()
-                .replace(/[^\w\s-]/g, '')
-                .replace(/[\s_-]+/g, '-')
-                .replace(/^-+|-+$/g, '');
-
-            const finalData = {
-                ...submitData,
-                slug,
-                established_year: submitData.established_year.toString(),
-                bed_capacity: submitData.bed_capacity.toString()
+            const { facilityInput, recognisedInput, highlightInput, programBachInput, programPgInput, ...submit } = formData;
+            const payload = {
+                ...submit,
+                slug: submit.slug || slugify(submit.name),
             };
-
             if (initialData?.id) {
-                // Update
-                const { error } = await supabase
-                    .from('colleges')
-                    .update(finalData)
-                    .eq('id', initialData.id);
+                const { error } = await supabase.from("universities").update(payload).eq("id", initialData.id);
                 if (error) throw error;
             } else {
-                // Insert
-                const { error } = await supabase.from('colleges').insert([finalData]);
+                const { error } = await supabase.from("universities").insert([payload]);
                 if (error) throw error;
             }
-
-            router.push('/admin/colleges');
+            router.push("/admin/colleges");
             router.refresh();
-        } catch (error) {
-            alert("Error saving college");
-            console.error(error);
+        } catch (err: any) {
+            alert("Error saving university: " + (err.message || ""));
+            console.error(err);
         } finally {
             setLoading(false);
         }
@@ -160,244 +114,207 @@ export default function CollegeForm({ initialData }: CollegeFormProps) {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
-
-            {/* Basic Info */}
+            {/* Basic */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label>College Name *</Label>
-                    <Input required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                    <Label>University Name *</Label>
+                    <Input required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value, slug: formData.slug || slugify(e.target.value) })} />
+                </div>
+                <div className="space-y-2">
+                    <Label>Slug (URL)</Label>
+                    <Input value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: slugify(e.target.value) })} placeholder="auto from name" />
                 </div>
 
                 <div className="space-y-2">
-                    <Label>College Address *</Label>
-                    <Input required value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
+                    <Label>Destination Country *</Label>
+                    <Select value={formData.country_code} onValueChange={(v) => setFormData({ ...formData, country_code: v })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            {siteConfig.countries.map((c) => (
+                                <SelectItem key={c.code} value={c.code}>{c.flag} {c.name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="space-y-2">
-                    <Label>Hospital Address</Label>
-                    <Input value={formData.hospital_address} onChange={e => setFormData({ ...formData, hospital_address: e.target.value })} placeholder="If different from college" />
+                    <Label>Streams (pick one or more) *</Label>
+                    <div className="flex flex-wrap gap-2">
+                        {siteConfig.streams.map((s) => (
+                            <button
+                                key={s.code}
+                                type="button"
+                                onClick={() => toggleStream(s.code)}
+                                className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${formData.stream_codes.includes(s.code) ? "bg-primary text-primary-foreground border-primary" : "bg-white text-gray-700 border-gray-300 hover:border-primary"}`}
+                            >
+                                {s.name}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label>City</Label>
+                    <Input value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                    <Label>Full address</Label>
+                    <Input value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Hospital address (medical only)</Label>
+                    <Input value={formData.hospital_address} onChange={(e) => setFormData({ ...formData, hospital_address: e.target.value })} />
                 </div>
 
                 <div className="space-y-2">
                     <Label>Affiliation</Label>
-                    <Select onValueChange={(v) => setFormData({ ...formData, affiliation: v })}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Affiliation" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Tribhuvan University (TU)">Tribhuvan University (TU)</SelectItem>
-                            <SelectItem value="Kathmandu University (KU)">Kathmandu University (KU)</SelectItem>
-                            <SelectItem value="Purbanchal University (PU)">Purbanchal University (PU)</SelectItem>
-                            <SelectItem value="Pokhara University (PoU)">Pokhara University (PoU)</SelectItem>
-                            <SelectItem value="BPKIHS">BPKIHS</SelectItem>
-                            <SelectItem value="P.A.H.S">P.A.H.S</SelectItem>
-                            <SelectItem value="K.A.H.S">K.A.H.S</SelectItem>
-                            <SelectItem value="M.I.H.S">M.I.H.S</SelectItem>
-                            <SelectItem value="R.A.H.S">R.A.H.S</SelectItem>
-                            <SelectItem value="N.A.M.S">N.A.M.S</SelectItem>
-                            <SelectItem value="Foreign Affiliation">Foreign Affiliation</SelectItem>
-                            <SelectItem value="CTEVT">CTEVT</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <Input value={formData.affiliation} onChange={(e) => setFormData({ ...formData, affiliation: e.target.value })} placeholder="e.g. Tribhuvan University" />
                 </div>
 
                 <div className="space-y-2">
-                    <Label>Type</Label>
-                    <Select defaultValue={formData.college_type} onValueChange={(v) => setFormData({ ...formData, college_type: v as CollegeType })}>
-                        <SelectTrigger>
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Government">Government</SelectItem>
-                            <SelectItem value="Private">Private</SelectItem>
-                            <SelectItem value="Community">Community</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <Label>University Type</Label>
+                    <Input value={formData.university_type} onChange={(e) => setFormData({ ...formData, university_type: e.target.value })} placeholder="Government / Private / Community / Public" />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Ranking</Label>
+                    <Input value={formData.ranking_text} onChange={(e) => setFormData({ ...formData, ranking_text: e.target.value })} placeholder="QS / NIRF / Times rank" />
                 </div>
 
                 <div className="space-y-2">
                     <Label>Established Year</Label>
-                    <Input type="number" value={formData.established_year} onChange={e => setFormData({ ...formData, established_year: parseInt(e.target.value) })} />
+                    <Input value={formData.established_year} onChange={(e) => setFormData({ ...formData, established_year: e.target.value })} />
                 </div>
 
                 <div className="space-y-2">
-                    <Label>Bed Capacity</Label>
-                    <Input type="number" value={formData.bed_capacity} onChange={e => setFormData({ ...formData, bed_capacity: parseInt(e.target.value) })} />
+                    <Label>Bed capacity (medical)</Label>
+                    <Input value={formData.bed_capacity} onChange={(e) => setFormData({ ...formData, bed_capacity: e.target.value })} />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Tuition range</Label>
+                    <Input value={formData.tuition_range} onChange={(e) => setFormData({ ...formData, tuition_range: e.target.value })} placeholder="e.g. ₹35–60 Lakh (full course)" />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Intake</Label>
+                    <Input value={formData.intake_info} onChange={(e) => setFormData({ ...formData, intake_info: e.target.value })} placeholder="e.g. September / Fall 2026" />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Application deadline</Label>
+                    <Input value={formData.application_deadline} onChange={(e) => setFormData({ ...formData, application_deadline: e.target.value })} />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Language requirements</Label>
+                    <Input value={formData.language_requirements} onChange={(e) => setFormData({ ...formData, language_requirements: e.target.value })} placeholder="IELTS 6.5 / TOEFL 80 / MOI accepted" />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Eligibility</Label>
+                    <Input value={formData.eligibility} onChange={(e) => setFormData({ ...formData, eligibility: e.target.value })} placeholder="e.g. 50% in PCB + NEET" />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                    <Label>Scholarship info</Label>
+                    <Input value={formData.scholarship_info} onChange={(e) => setFormData({ ...formData, scholarship_info: e.target.value })} />
                 </div>
             </div>
 
-            {/* Images */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <ImageUpload
-                    label="Cover Image"
-                    value={formData.cover_image_url}
-                    onChange={(url) => setFormData({ ...formData, cover_image_url: url })}
-                />
-                <ImageUpload
-                    label="Logo Image"
-                    value={formData.logo_url}
-                    onChange={(url) => setFormData({ ...formData, logo_url: url })}
-                />
+                <ImageUpload label="Cover Image" value={formData.cover_image_url} onChange={(url) => setFormData({ ...formData, cover_image_url: url })} />
+                <ImageUpload label="Logo" value={formData.logo_url} onChange={(url) => setFormData({ ...formData, logo_url: url })} />
             </div>
 
-            {/* Dynamic Lists Section */}
-            <div className="space-y-6 border-t pt-6">
-                <h3 className="text-lg font-semibold text-gray-800">College Details</h3>
-
-                {/* Recognised By */}
-                <div className="space-y-2">
-                    <Label>Recognised By</Label>
-                    <div className="flex gap-2">
-                        <Input value={formData.recognisedInput} onChange={e => setFormData({ ...formData, recognisedInput: e.target.value })} placeholder="e.g. Nepal Medical Council" />
-                        <Button type="button" onClick={() => addItem('recognised_by', 'recognisedInput')}><Plus className="w-4 h-4" /></Button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        {formData.recognised_by.map((item, i) => (
-                            <span key={i} className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center gap-2">
-                                {item} <button type="button" onClick={() => removeItem('recognised_by', i)}>&times;</button>
-                            </span>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Highlights */}
-                <div className="space-y-2">
-                    <Label>Highlights</Label>
-                    <div className="flex gap-2">
-                        <Input value={formData.highlightInput} onChange={e => setFormData({ ...formData, highlightInput: e.target.value })} placeholder="e.g. Located in Medical City" />
-                        <Button type="button" onClick={() => addItem('highlights', 'highlightInput')}><Plus className="w-4 h-4" /></Button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        {formData.highlights.map((item, i) => (
-                            <span key={i} className="bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full text-sm flex items-center gap-2">
-                                {item} <button type="button" onClick={() => removeItem('highlights', i)}>&times;</button>
-                            </span>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Facilities */}
-                <div className="space-y-2">
-                    <Label>Facilities</Label>
-                    <div className="flex gap-2">
-                        <Input value={formData.facilityInput} onChange={e => setFormData({ ...formData, facilityInput: e.target.value })} placeholder="e.g. Hostel, Library" />
-                        <Button type="button" onClick={() => addItem('facilities', 'facilityInput')}><Plus className="w-4 h-4" /></Button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        {formData.facilities.map((item, i) => (
-                            <span key={i} className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm flex items-center gap-2">
-                                {item} <button type="button" onClick={() => removeItem('facilities', i)}>&times;</button>
-                            </span>
-                        ))}
-                    </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Input value={formData.website_url} onChange={(e) => setFormData({ ...formData, website_url: e.target.value })} placeholder="Website URL" />
+                <Input value={formData.contact_email} onChange={(e) => setFormData({ ...formData, contact_email: e.target.value })} placeholder="Contact email" />
+                <Input value={formData.contact_phone} onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })} placeholder="Contact phone" />
             </div>
 
-            {/* Transportation & Location */}
+            {/* Lists */}
             <div className="space-y-6 border-t pt-6">
-                <h3 className="text-lg font-semibold text-gray-800">Location & Access</h3>
+                <h3 className="text-lg font-semibold text-gray-800">Details</h3>
 
-                {/* Nearest Borders */}
-                <div className="space-y-2">
-                    <Label>Nearest Indian Borders</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                        <Input value={formData.borderName} onChange={e => setFormData({ ...formData, borderName: e.target.value })} placeholder="Border Name (e.g. Raxaul)" />
-                        <Input value={formData.borderDist} onChange={e => setFormData({ ...formData, borderDist: e.target.value })} placeholder="Distance (e.g. 140 km)" />
-                        <Button type="button" onClick={addBorder} className="col-span-2">Add Border Info</Button>
-                    </div>
-                    <div className="space-y-2 mt-2">
-                        {formData.nearest_borders.map((item, i) => (
-                            <div key={i} className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                                <span className="text-sm"><strong>{item.distance}</strong> from {item.name}</span>
-                                <Button type="button" variant="ghost" size="sm" onClick={() => setFormData(p => ({ ...p, nearest_borders: p.nearest_borders.filter((_, idx) => idx !== i) }))}>
-                                    <Trash2 className="w-4 h-4 text-red-500" />
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <ListInput label="Recognised by" tone="blue" items={formData.recognised_by} input={formData.recognisedInput} onChange={(v) => setFormData({ ...formData, recognisedInput: v })} onAdd={() => addItem("recognised_by", "recognisedInput")} onRemove={(i) => removeItem("recognised_by", i)} placeholder="e.g. Nepal Medical Council" />
 
-                {/* Access Modes */}
-                <div className="space-y-2">
-                    <Label>Access From / How To Reach</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                        <Input value={formData.accessMode} onChange={e => setFormData({ ...formData, accessMode: e.target.value })} placeholder="Mode (e.g. Bus, Flight)" />
-                        <Input value={formData.accessDesc} onChange={e => setFormData({ ...formData, accessDesc: e.target.value })} placeholder="Details (e.g. Direct bus from Patna)" />
-                        <Button type="button" onClick={addAccess} className="col-span-2">Add Access Info</Button>
-                    </div>
-                    <div className="space-y-2 mt-2">
-                        {formData.access_modes.map((item, i) => (
-                            <div key={i} className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                                <span className="text-sm"><strong>{item.mode}</strong>: {item.description}</span>
-                                <Button type="button" variant="ghost" size="sm" onClick={() => setFormData(p => ({ ...p, access_modes: p.access_modes.filter((_, idx) => idx !== i) }))}>
-                                    <Trash2 className="w-4 h-4 text-red-500" />
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <ListInput label="Highlights" tone="amber" items={formData.highlights} input={formData.highlightInput} onChange={(v) => setFormData({ ...formData, highlightInput: v })} onAdd={() => addItem("highlights", "highlightInput")} onRemove={(i) => removeItem("highlights", i)} placeholder="e.g. Located in Medical City" />
+
+                <ListInput label="Facilities" tone="green" items={formData.facilities} input={formData.facilityInput} onChange={(v) => setFormData({ ...formData, facilityInput: v })} onAdd={() => addItem("facilities", "facilityInput")} onRemove={(i) => removeItem("facilities", i)} placeholder="e.g. Hostel, Library" />
             </div>
 
             {/* Programs */}
             <div className="space-y-6 border-t pt-6">
-                <h3 className="text-lg font-semibold text-gray-800">Academic Programs</h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Bachelors */}
-                    <div className="space-y-2">
-                        <Label>Bachelors Level</Label>
-                        <div className="flex gap-2">
-                            <Input value={formData.programBachInput} onChange={e => setFormData({ ...formData, programBachInput: e.target.value })} placeholder="e.g. MBBS, BDS" />
-                            <Button type="button" onClick={() => addItem('programs_bachelor', 'programBachInput')}><Plus className="w-4 h-4" /></Button>
-                        </div>
-                        <ul className="list-disc list-inside text-sm text-gray-600 mt-2">
-                            {formData.programs_bachelor.map((item, i) => (
-                                <li key={i} className="flex justify-between hover:bg-gray-50 p-1">
-                                    {item} <button type="button" onClick={() => removeItem('programs_bachelor', i)} className="text-red-500">&times;</button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* PG */}
-                    <div className="space-y-2">
-                        <Label>Post Graduate Level</Label>
-                        <div className="flex gap-2">
-                            <Input value={formData.programPgInput} onChange={e => setFormData({ ...formData, programPgInput: e.target.value })} placeholder="e.g. MD (General Practice)" />
-                            <Button type="button" onClick={() => addItem('programs_pg', 'programPgInput')}><Plus className="w-4 h-4" /></Button>
-                        </div>
-                        <ul className="list-disc list-inside text-sm text-gray-600 mt-2">
-                            {formData.programs_pg.map((item, i) => (
-                                <li key={i} className="flex justify-between hover:bg-gray-50 p-1">
-                                    {item} <button type="button" onClick={() => removeItem('programs_pg', i)} className="text-red-500">&times;</button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                <h3 className="text-lg font-semibold text-gray-800">Programs</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                    <ListInput label="Bachelors / UG" tone="blue" items={formData.programs_bachelor} input={formData.programBachInput} onChange={(v) => setFormData({ ...formData, programBachInput: v })} onAdd={() => addItem("programs_bachelor", "programBachInput")} onRemove={(i) => removeItem("programs_bachelor", i)} placeholder="e.g. MBBS, B.Tech CSE" />
+                    <ListInput label="PG / Masters" tone="purple" items={formData.programs_pg} input={formData.programPgInput} onChange={(v) => setFormData({ ...formData, programPgInput: v })} onAdd={() => addItem("programs_pg", "programPgInput")} onRemove={(i) => removeItem("programs_pg", i)} placeholder="e.g. MD, M.Tech AI" />
                 </div>
             </div>
 
-            {/* Additional Info */}
             <div className="space-y-2 border-t pt-6">
-                <Label>Additional Information / Description</Label>
-                <Textarea rows={5} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="General description..." />
-                <Label className="mt-4 block">Extra Notes (Markdown supported)</Label>
-                <Textarea rows={3} value={formData.additional_info} onChange={e => setFormData({ ...formData, additional_info: e.target.value })} placeholder="Any other info..." />
+                <Label>Short description (for cards)</Label>
+                <Textarea rows={2} value={formData.short_description} onChange={(e) => setFormData({ ...formData, short_description: e.target.value })} />
+                <Label className="mt-4 block">Full description</Label>
+                <Textarea rows={5} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+                <Label className="mt-4 block">Additional info</Label>
+                <Textarea rows={3} value={formData.additional_info} onChange={(e) => setFormData({ ...formData, additional_info: e.target.value })} />
             </div>
 
-            <div className="flex items-center gap-2">
-                <Checkbox
-                    id="featured"
-                    checked={formData.is_featured}
-                    onCheckedChange={(c) => setFormData({ ...formData, is_featured: c as boolean })}
-                />
-                <Label htmlFor="featured">Feature this college on homepage</Label>
+            <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                    <Checkbox id="featured" checked={formData.is_featured} onCheckedChange={(c) => setFormData({ ...formData, is_featured: c as boolean })} />
+                    <Label htmlFor="featured">Featured on homepage</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox id="active" checked={formData.is_active} onCheckedChange={(c) => setFormData({ ...formData, is_active: c as boolean })} />
+                    <Label htmlFor="active">Active / visible</Label>
+                </div>
             </div>
 
             <div className="flex justify-end gap-4 pb-12">
                 <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-                <Button type="submit" disabled={loading} size="lg">{loading ? 'Saving...' : (initialData ? 'Update College' : 'Create College')}</Button>
+                <Button type="submit" disabled={loading} size="lg">{loading ? "Saving..." : initialData ? "Update University" : "Create University"}</Button>
             </div>
         </form>
+    );
+}
+
+function ListInput({
+    label, items, input, onChange, onAdd, onRemove, placeholder, tone = "blue",
+}: {
+    label: string;
+    items: string[];
+    input: string;
+    onChange: (v: string) => void;
+    onAdd: () => void;
+    onRemove: (i: number) => void;
+    placeholder?: string;
+    tone?: "blue" | "amber" | "green" | "purple";
+}) {
+    const toneCls: Record<string, string> = {
+        blue: "bg-blue-50 text-blue-700",
+        amber: "bg-amber-50 text-amber-700",
+        green: "bg-green-50 text-green-700",
+        purple: "bg-purple-50 text-purple-700",
+    };
+    return (
+        <div className="space-y-2">
+            <Label>{label}</Label>
+            <div className="flex gap-2">
+                <Input value={input} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+                <Button type="button" onClick={onAdd}><Plus className="w-4 h-4" /></Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+                {items.map((it, i) => (
+                    <span key={i} className={`${toneCls[tone]} px-3 py-1 rounded-full text-sm flex items-center gap-2`}>
+                        {it}
+                        <button type="button" onClick={() => onRemove(i)}>&times;</button>
+                    </span>
+                ))}
+            </div>
+        </div>
     );
 }

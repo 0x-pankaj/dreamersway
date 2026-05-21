@@ -9,7 +9,8 @@ import { AlertCircle } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Notices & Announcements",
-  description: "Stay updated with the latest news from universities, entrance exams, and admission deadlines for medical colleges in Nepal.",
+  description: "Latest notices, admission deadlines and university announcements for Nepal, India, UK, USA and Japan.",
+  alternates: { canonical: "/notices" },
 };
 
 export const revalidate = 0;

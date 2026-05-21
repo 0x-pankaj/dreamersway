@@ -12,10 +12,10 @@ import {
 
 interface GalleryLightboxProps {
   images: string[];
-  collegeName: string;
+  collegeName?: string;
 }
 
-export default function GalleryLightbox({ images, collegeName }: GalleryLightboxProps) {
+export default function GalleryLightbox({ images, collegeName = "Gallery" }: GalleryLightboxProps) {
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 

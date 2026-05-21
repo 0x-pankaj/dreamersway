@@ -1,290 +1,465 @@
-
+import Link from "next/link";
 import { Navigation } from "@/components/navigation";
 import Footer from "@/components/sections/Footer";
-import About from "@/components/sections/About";
-import { supabase } from "@/lib/supabaseClient";
-import NoticeList from "@/components/NoticeList";
 import { CollegeCard } from "@/components/CollegeCard";
-import { College, Notice } from "@/types";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, GraduationCap, Building2, Users, Award, TrendingUp, CheckCircle2, AlertCircle } from "lucide-react";
+import { CountryCard } from "@/components/CountryCard";
+import NoticeList from "@/components/NoticeList";
 import { ContactForm } from "@/components/ContactForm";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import { HeroHighlight } from "@/components/ui/hero-highlight";
+import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  GraduationCap,
+  Globe2,
+  Award,
+  Users,
+  CheckCircle2,
+  TrendingUp,
+  Sparkles,
+  Target,
+  FileText,
+  BookOpen,
+  Plane,
+  Briefcase,
+  Star,
+  Quote,
+} from "lucide-react";
+import {
+  getCountries,
+  getUniversities,
+  getNotices,
+  getServices,
+  getSuccessStories,
+  getBlogPosts,
+} from "@/lib/data";
+import { siteConfig } from "@/lib/site-config";
+import Image from "next/image";
 
-export const revalidate = 0;
+export const revalidate = 60;
+
+const SERVICE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Target,
+  FileText,
+  BookOpen,
+  Plane,
+  Award,
+  Briefcase,
+  PlaneTakeoff: Plane,
+};
 
 export default async function Home() {
-  let colleges: College[] = [];
-  let collegesError = false;
-  try {
-    const { data, error } = await supabase
-      .from('colleges')
-      .select('*')
-      .eq('is_featured', true)
-      .limit(3);
+  const [countries, featuredUnis, notices, services, stories, blogPosts] = await Promise.all([
+    getCountries(),
+    getUniversities({ featuredOnly: true, limit: 6 }),
+    getNotices(5),
+    getServices(),
+    getSuccessStories(6),
+    getBlogPosts({ limit: 3 }),
+  ]);
 
-    if (data) colleges = data;
-    if (error) {
-      console.error("Error fetching colleges:", error);
-      collegesError = true;
-    }
-  } catch (err) {
-    console.error("Supabase fetch error:", err);
-    collegesError = true;
-  }
+  const displayCountries = countries.length
+    ? countries
+    : siteConfig.countries.map((c, i) => ({
+      id: String(i),
+      created_at: "",
+      code: c.code,
+      name: c.name,
+      flag_emoji: c.flag,
+      tagline: c.stream,
+      popular_streams: [c.code === "nepal" ? "medical" : c.code === "india" ? "engineering" : "higher-education"],
+      is_active: true,
+      display_order: i,
+    } as any));
 
-  let notices: Notice[] = [];
-  let noticesError = false;
-  try {
-    const { data, error } = await supabase
-      .from('notices')
-      .select('*')
-      .order('publish_date', { ascending: false })
-      .limit(5);
-
-    if (data) notices = data;
-    if (error) {
-      console.error("Error fetching notices:", error);
-      noticesError = true;
-    }
-  } catch (err) {
-    console.error("Supabase fetch notices error:", err);
-    noticesError = true;
-  }
+  const stats = [
+    { value: "5+", label: "Countries", icon: Globe2 },
+    { value: "200+", label: "Partner Universities", icon: GraduationCap },
+    { value: "5,000+", label: "Students Placed", icon: Users },
+    { value: "12+", label: "Years of Experience", icon: Award },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-black dark:via-black dark:to-gray-900 flex flex-col relative overflow-hidden">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] pointer-events-none" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-      }}></div>
+    <div className="min-h-screen bg-white dark:bg-black flex flex-col">
       <Navigation />
-      <main className="flex-1 relative z-10">
-        {/* Enhanced Hero Section */}
-        <HeroHighlight
-          containerClassName="items-start pt-28 md:pt-0 md:items-center"
-          className="relative min-h-screen flex items-center justify-center overflow-hidden">
-          {/* Content */}
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-32 lg:py-48 text-center z-10 flex flex-col justify-center h-full">
-            <div className="space-y-8">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-full text-sm font-bold shadow-2xl mb-6 animate-fade-in-up">
-                <GraduationCap className="w-5 h-5" />
-                Nepal&apos;s Premier Medical College Platform
-              </div>
 
-              {/* Heading */}
-              <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight drop-shadow-2xl font-mont">
-                Your Journey to
-                <span className="block bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 bg-clip-text text-transparent mt-2">
-                  Medical Excellence
-                </span>
-                Starts Here
-              </h1>
+      <main className="flex-1">
+        {/* ============== HERO ============== */}
+        <section className="relative pt-32 md:pt-40 pb-20 md:pb-28 overflow-hidden bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-950 dark:from-black dark:via-gray-950 dark:to-black">
+          {/* animated background blobs */}
+          <div className="absolute inset-0">
+            <div className="absolute top-20 -left-20 w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-10 right-0 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+            <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "3s" }} />
+          </div>
 
-              {/* Description */}
-              <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto font-medium leading-relaxed drop-shadow-lg">
-                Discover Nepal&apos;s top medical colleges with comprehensive details on programs, facilities, and admissions — all in one place.
-              </p>
+          {/* subtle dot grid */}
+          <div className="absolute inset-0 opacity-30" style={{
+            backgroundImage:
+              "radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }} />
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-                <Link href="/colleges">
-                  <Button size="lg" className="bg-white text-primary hover:bg-gray-100 font-bold text-lg px-8 py-6 rounded-xl shadow-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 hover:scale-105 group">
-                    Explore Colleges
-                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-2.5 rounded-full text-sm font-semibold mb-7 animate-fade-in-up">
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              Nepal · India · UK · USA · Japan — one trusted partner
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white mb-6 leading-[1.05] font-mont">
+              Your dream university.
+              <span className="block bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 bg-clip-text text-transparent mt-2">
+                Anywhere in the world.
+              </span>
+            </h1>
+
+            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
+              MBBS in Nepal for Indian students. Engineering in India, Higher Education in the UK, USA & Japan for Nepali students. End-to-end guidance — shortlisting, applications, scholarships, visa and beyond.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-12">
+              <Link href="/contact?intent=book">
+                <Button
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base px-7 py-6 rounded-xl shadow-2xl hover:shadow-primary/30 transition-all hover:scale-105"
+                >
+                  Get Free Consultation
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link href="/universities">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-white/40 text-white hover:bg-white hover:text-gray-900 font-bold text-base px-7 py-6 rounded-xl bg-white/5 backdrop-blur-sm"
+                >
+                  Browse Universities
+                </Button>
+              </Link>
+            </div>
+
+            {/* Destination quick chips */}
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10">
+              {siteConfig.countries.map((c) => (
+                <Link
+                  key={c.code}
+                  href={`/study-in/${c.code}`}
+                  className="group inline-flex items-center gap-2 bg-white/10 hover:bg-white text-white hover:text-gray-900 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full font-semibold text-sm transition-all hover:scale-105"
+                >
+                  <span className="text-xl">{c.flag}</span>
+                  Study in {c.name}
                 </Link>
-                <Link href="/notices">
-                  <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary font-bold text-lg px-8 py-6 rounded-xl backdrop-blur-sm bg-white/10 shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-                    Latest Notices
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </HeroHighlight>
-
-        {/* Notices Section */}
-        <section className="relative z-20 px-4 md:px-0 py-12 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
-          <div className="max-w-7xl mx-auto">
-            {noticesError ? (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 flex items-center gap-3">
-                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <p className="text-red-700 dark:text-red-300 text-sm">Unable to load notices at the moment. Please try again later.</p>
-              </div>
-            ) : (
-              <NoticeList notices={notices} compact={true} />
-            )}
-          </div>
-        </section>
-
-        {/* Featured Colleges Section */}
-        <section className="py-24 relative overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 dark:from-black dark:via-gray-900/40 dark:to-black">
-          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-2 rounded-full text-sm font-bold mb-6">
-                <Building2 className="w-4 h-4" />
-                Top Institutions
-              </div>
-
-              <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 font-mont">
-                Featured Medical Colleges
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Handpicked institutions renowned for their excellence in medical education, state-of-the-art facilities, and outstanding clinical exposure.
-              </p>
+              ))}
             </div>
 
-            {collegesError ? (
-              <div className="text-center py-20 bg-red-50 dark:bg-red-900/10 rounded-3xl border border-red-200 dark:border-red-900/30">
-                <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                <p className="text-red-600 dark:text-red-300 text-lg font-medium">Unable to load colleges</p>
-                <p className="text-red-500 dark:text-red-400 text-sm mt-2">Please check your connection and try again later.</p>
-              </div>
-            ) : colleges.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                  {colleges.map((college) => (
-                    <CollegeCard key={college.id} college={college} />
-                  ))}
-                </div>
-
-                <div className="text-center">
-                  <Link href="/colleges">
-                    <Button
-                      size="lg"
-                      className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 text-white font-bold text-lg px-10 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
-                    >
-                      View All Colleges
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            ) : (
-              <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-dashed border-gray-300 dark:border-gray-800 shadow-inner">
-                <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg mb-6">No colleges featured yet.</p>
-                <Button variant="outline" disabled className="font-semibold">Check back soon</Button>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* Why Choose Us Section */}
-        <section className="py-24 bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black text-white relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full filter blur-[120px] animate-pulse"></div>
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
-            <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-purple-500 rounded-full filter blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
-          </div>
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-black mb-6 font-mont">
-                Why Students Choose
-                <span className="block bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent mt-2">
-                  Dreamers Way
-                </span>
-              </h2>
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                Your trusted platform for making informed decisions about your medical education journey.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                {
-                  icon: <Building2 className="w-8 h-8" />,
-                  title: "Verified Colleges",
-                  description: "Only authentic, verified medical institutions with complete details"
-                },
-                {
-                  icon: <Users className="w-8 h-8" />,
-                  title: "Expert Guidance",
-                  description: "Professional support throughout your college selection process"
-                },
-                {
-                  icon: <Award className="w-8 h-8" />,
-                  title: "Latest Updates",
-                  description: "Real-time notifications about admissions, exams, and notices"
-                },
-                {
-                  icon: <TrendingUp className="w-8 h-8" />,
-                  title: "Success Stories",
-                  description: "Join thousands of students who found their dream college"
-                }
-              ].map((feature, index) => (
-                <div key={index} className="group relative">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-blue-500 to-purple-500 rounded-3xl opacity-0 group-hover:opacity-100 blur transition duration-500"></div>
-                  <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl h-full">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary/20 to-blue-500/20 backdrop-blur-sm rounded-2xl mb-6 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
-                      <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-500 rounded-2xl flex items-center justify-center">
-                        {feature.icon}
-                      </div>
-                    </div>
-                    <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">{feature.title}</h3>
-                    <p className="text-gray-300 leading-relaxed">{feature.description}</p>
-                  </div>
+            {/* Stats Strip */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto pt-6 border-t border-white/10">
+              {stats.map((s) => (
+                <div key={s.label} className="flex flex-col items-center text-center">
+                  <s.icon className="w-6 h-6 text-amber-300 mb-2" />
+                  <div className="text-2xl md:text-3xl font-black text-white">{s.value}</div>
+                  <div className="text-xs md:text-sm text-white/70 font-medium">{s.label}</div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <TestimonialsSection />
-
-        <About />
-
-        {/* Contact Section */}
-        <div className="py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-black dark:to-gray-900 relative overflow-hidden" id="contact" style={{ scrollMarginTop: "180px" }}>
-          <div className="absolute top-10 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ============== DESTINATIONS ============== */}
+        <section className="py-20 md:py-24 bg-gradient-to-b from-white via-amber-50/30 to-white dark:from-black dark:via-gray-950 dark:to-black">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 font-mont">Get in Touch</h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Have questions? We&apos;d love to hear from you. Send us a message or visit our location.
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                <Globe2 className="w-3.5 h-3.5" /> Destinations
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 font-mont">
+                Pick your dream destination
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Curated programs, transparent costs, hand-picked universities — for every dream and every budget.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              <div className="w-full">
-                <div className="[&>section]:p-0 [&>section>div]:p-0 [&>section>div]:max-w-none [&>section>div>div]:max-w-none">
-                  <ContactForm />
-                </div>
-              </div>
-
-              <div className="w-full h-full min-h-[600px] rounded-2xl overflow-hidden shadow-xl border border-white/50 dark:border-gray-800 bg-white/50 dark:bg-black/50 backdrop-blur-sm p-2">
-                <div className="w-full h-full rounded-xl overflow-hidden relative">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0, minHeight: "600px" }}
-                    src="https://maps.google.com/maps?q=27%C2%B041'16.0%22N+85%C2%B021'00.0%22E&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                    loading="lazy"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md p-4 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
-                    <h3 className="font-bold text-gray-900 dark:text-white">Our Location</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">Kathmandu, Nepal</p>
-                  </div>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {displayCountries.slice(0, 6).map((c) => (
+                <CountryCard key={c.code} country={c as any} />
+              ))}
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* ============== SERVICES ============== */}
+        <section className="py-20 md:py-24 bg-gray-50 dark:bg-gray-950 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                <Sparkles className="w-3.5 h-3.5" /> One-stop services
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 font-mont">
+                Everything you need, in one place
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                From your first counselling session to your first day on campus, we handle every step.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {(services.length ? services : DEFAULT_SERVICES).map((s, i) => {
+                const Icon = SERVICE_ICONS[s.icon || ""] || Sparkles;
+                return (
+                  <div
+                    key={s.slug || i}
+                    className="group bg-white dark:bg-black rounded-2xl p-6 border border-gray-200 dark:border-gray-800 hover:border-primary/40 hover:shadow-xl transition-all"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center text-primary-foreground mb-4 group-hover:scale-110 transition-transform">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 font-mont">{s.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                      {s.short_description}
+                    </p>
+                    {s.features && s.features.length > 0 && (
+                      <ul className="space-y-1.5">
+                        {s.features.slice(0, 3).map((f: string) => (
+                          <li key={f} className="flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ============== FEATURED UNIVERSITIES ============== */}
+        {featuredUnis.length > 0 && (
+          <section className="py-20 md:py-24">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                <div>
+                  <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                    <GraduationCap className="w-3.5 h-3.5" /> Featured universities
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white font-mont">
+                    Hand-picked institutions
+                  </h2>
+                </div>
+                <Link href="/universities">
+                  <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                    View all <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredUnis.map((u) => (
+                  <CollegeCard key={u.id} college={u} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ============== HOW IT WORKS ============== */}
+        <section className="py-20 md:py-24 bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 dark:from-black dark:via-gray-950 dark:to-black text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-3xl" />
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                <TrendingUp className="w-3.5 h-3.5 text-amber-300" /> Your journey, simplified
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black mb-4 font-mont">From dream to departure in 5 steps</h2>
+              <p className="text-lg text-white/70 max-w-2xl mx-auto">
+                A clear roadmap — no jargon, no surprises.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-5 gap-5">
+              {[
+                { n: 1, t: "Free counselling", d: "Tell us your goals, budget and grades — we build your roadmap." },
+                { n: 2, t: "Shortlist & apply", d: "Country/university shortlist tailored to your profile and odds." },
+                { n: 3, t: "Test prep & docs", d: "IELTS/SAT/GRE prep + SOPs, LORs, transcripts, finances." },
+                { n: 4, t: "Visa & funding", d: "Scholarships, loans, mock interviews, visa filing." },
+                { n: 5, t: "Take off!", d: "Forex, accommodation, airport pickup — settle in like a pro." },
+              ].map((step) => (
+                <div key={step.n} className="relative bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-300 to-amber-500 text-gray-900 font-black flex items-center justify-center mb-3 text-lg shadow-lg">
+                    {step.n}
+                  </div>
+                  <h3 className="font-bold mb-1.5 text-base">{step.t}</h3>
+                  <p className="text-sm text-white/70 leading-relaxed">{step.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ============== SUCCESS STORIES ============== */}
+        {stories.length > 0 ? (
+          <section className="py-20 md:py-24 bg-amber-50/30 dark:bg-gray-950">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                  <Quote className="w-3.5 h-3.5" /> Real students. Real dreams.
+                </div>
+                <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 font-mont">
+                  Success stories
+                </h2>
+              </div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {stories.slice(0, 6).map((s) => (
+                  <div key={s.id} className="bg-white dark:bg-black rounded-2xl p-6 border border-gray-200 dark:border-gray-800 hover:shadow-xl transition-all">
+                    <div className="flex items-center gap-1 mb-3 text-amber-400">
+                      {Array.from({ length: s.rating || 5 }).map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-current" />
+                      ))}
+                    </div>
+                    <Quote className="w-7 h-7 text-primary/30 mb-2" />
+                    <p className="text-gray-700 dark:text-gray-300 mb-5 leading-relaxed text-sm line-clamp-5">
+                      &ldquo;{s.short_quote || s.story}&rdquo;
+                    </p>
+                    <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+                      {s.photo_url ? (
+                        <Image src={s.photo_url} alt={s.student_name} width={48} height={48} className="rounded-full object-cover w-12 h-12" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center text-white font-bold">
+                          {s.student_name?.[0]}
+                        </div>
+                      )}
+                      <div>
+                        <div className="font-bold text-gray-900 dark:text-white">{s.student_name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {s.program} {s.university && `· ${s.university}`}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : (
+          <TestimonialsSection />
+        )}
+
+        {/* ============== BLOG/RESOURCES ============== */}
+        {blogPosts.length > 0 && (
+          <section className="py-20 md:py-24">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                <div>
+                  <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                    <BookOpen className="w-3.5 h-3.5" /> Resources
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white font-mont">
+                    Latest guides & insights
+                  </h2>
+                </div>
+                <Link href="/blog">
+                  <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                    All articles <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {blogPosts.map((post) => (
+                  <Link key={post.id} href={`/blog/${post.slug}`} className="group block">
+                    <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-blue-500/20 mb-4">
+                      {post.cover_image_url ? (
+                        <Image
+                          src={post.cover_image_url}
+                          alt={post.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <BookOpen className="w-12 h-12 text-primary/50" />
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                      {post.excerpt}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ============== NOTICES ============== */}
+        {notices.length > 0 && (
+          <section className="py-16 bg-gray-50 dark:bg-gray-950 border-y border-gray-100 dark:border-gray-900">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <NoticeList notices={notices} compact={true} />
+            </div>
+          </section>
+        )}
+
+        {/* ============== CONTACT / CTA ============== */}
+        <section id="contact" className="py-20 md:py-24 bg-gradient-to-br from-white via-amber-50/30 to-white dark:from-black dark:via-gray-950 dark:to-black">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-10 items-start">
+              <div>
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                  Free consultation
+                </div>
+                <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 font-mont">
+                  Let&apos;s plan your future
+                </h2>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                  Tell us where you want to go and what you want to study — we&apos;ll get back within 24 hours with a personalised roadmap.
+                </p>
+                <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400 mb-6">
+                  {[
+                    "100% free first consultation",
+                    "Honest, profile-based recommendations",
+                    "5,000+ students successfully placed",
+                    "Transparent pricing, no surprises",
+                  ].map((b) => (
+                    <div key={b} className="flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
+                      <span>{b}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm">
+                  <iframe
+                    width="100%"
+                    height="280"
+                    src={siteConfig.contact.mapEmbedSrc}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              </div>
+              <ContactForm />
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />
     </div>
   );
 }
+
+const DEFAULT_SERVICES = [
+  { slug: "shortlist", title: "University Shortlisting", icon: "Target", short_description: "Data-driven shortlists matched to your profile, budget and goals.", features: ["Profile evaluation", "Country-fit analysis", "Budget mapping"] },
+  { slug: "counselling", title: "Admission Counselling", icon: "FileText", short_description: "End-to-end help with applications, SOPs, LORs and interviews.", features: ["SOP review", "LOR drafting", "Interview prep"] },
+  { slug: "test", title: "Test Preparation", icon: "BookOpen", short_description: "IELTS, TOEFL, SAT, GRE, GMAT, JLPT — guided prep with experts.", features: ["Diagnostic", "Study plan", "Mock tests"] },
+  { slug: "visa", title: "Visa Guidance", icon: "Plane", short_description: "Documentation, financial planning, interview prep and filing.", features: ["Doc checklist", "Mock interview", "Filing"] },
+  { slug: "scholarship", title: "Scholarship Assistance", icon: "Award", short_description: "Identify and apply to scholarships you actually qualify for.", features: ["Match", "Essays", "Tracking"] },
+  { slug: "predeparture", title: "Pre-departure Support", icon: "PlaneTakeoff", short_description: "Forex, accommodation, SIM, airport pickup and settling-in.", features: ["Forex", "Accommodation", "Travel"] },
+];

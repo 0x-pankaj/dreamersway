@@ -45,18 +45,17 @@ export default async function About() {
               ABOUT US
             </span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-6 font-mont">
-              Guiding Your Medical Journey
+              Guiding global education journeys
             </h2>
             <div className="space-y-4 text-gray-600 dark:text-gray-300 leading-relaxed">
               <p>
-                Dreamers Way Consultancy is dedicated to helping students achieve their dreams of pursuing
-                medical education in Nepal. With years of experience, we provide comprehensive guidance
-                to aspiring medical professionals.
+                Dreamer&apos;s Way Consultancy helps Indian students pursue MBBS / BDS in Nepal, and Nepali
+                students pursue engineering in India and higher education in the UK, USA and Japan.
+                We&apos;ve guided thousands of students into the right universities with the right plans.
               </p>
               <p>
-                We understand that choosing the right medical college is one of the most important
-                decisions in a student&apos;s life. That&apos;s why we offer personalized counseling, complete
-                admission assistance, and ongoing support throughout your educational journey.
+                We don&apos;t sell universities — we build careers. Honest counselling, transparent
+                pricing and end-to-end support from your first call to your first day on campus.
               </p>
             </div>
 

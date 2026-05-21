@@ -1,41 +1,33 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import CollegeForm from "@/components/admin/CollegeForm";
-import { useParams, useRouter } from 'next/navigation';
-import { College } from '@/types';
+import { useParams } from "next/navigation";
+import { University } from "@/types";
 
-export default function EditCollegePage() {
+export default function EditUniversityPage() {
     const params = useParams();
-    const [college, setCollege] = useState<College | null>(null);
+    const [u, setU] = useState<University | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchCollege = async () => {
+        const run = async () => {
             if (!params.id) return;
-
-            const { data, error } = await supabase
-                .from('colleges')
-                .select('*')
-                .eq('id', params.id)
-                .single();
-
-            if (data) setCollege(data);
-            if (error) console.error("Error fetching college:", error);
+            const { data } = await supabase.from("universities").select("*").eq("id", params.id).single();
+            if (data) setU(data as University);
             setLoading(false);
         };
-
-        fetchCollege();
+        run();
     }, [params.id]);
 
     if (loading) return <div>Loading...</div>;
-    if (!college) return <div>College not found</div>;
+    if (!u) return <div>University not found</div>;
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-gray-900">Edit College</h1>
-            <CollegeForm initialData={college} />
+            <h1 className="text-2xl font-bold text-gray-900">Edit University</h1>
+            <CollegeForm initialData={u} />
         </div>
     );
 }
