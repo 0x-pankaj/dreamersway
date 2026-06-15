@@ -15,7 +15,7 @@ export const siteConfig = {
         email: "info@dreamersway.com.np",
         address: "Kathmandu, Nepal",
         mapEmbedSrc:
-            "https://maps.google.com/maps?q=27%C2%B041'16.0%22N+85%C2%B021'00.0%22E&t=&z=15&ie=UTF8&iwloc=&output=embed",
+            "https://maps.google.com/maps?q=27.68455812317496,85.34821674069123&t=&z=16&ie=UTF8&iwloc=&output=embed",
     },
     social: {
         facebook: "https://facebook.com/",
