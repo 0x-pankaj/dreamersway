@@ -72,10 +72,10 @@ export default async function Home() {
     } as any));
 
   const stats = [
-    { value: "5+", label: "Countries", icon: Globe2 },
-    { value: "200+", label: "Partner Universities", icon: GraduationCap },
-    { value: "5,000+", label: "Students Placed", icon: Users },
-    { value: "12+", label: "Years of Experience", icon: Award },
+    { value: "7+", label: "Countries", icon: Globe2 },
+    { value: "50+", label: "Partner Universities", icon: GraduationCap },
+    { value: "500+", label: "Students Placed", icon: Users },
+    { value: "8+", label: "Years of Experience", icon: Award },
   ];
 
   return (
@@ -102,7 +102,7 @@ export default async function Home() {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-2.5 rounded-full text-sm font-semibold mb-7 animate-fade-in-up">
               <Sparkles className="w-4 h-4 text-amber-300" />
-              Nepal · India · UK · USA · Japan — one trusted partner
+              Nepal · India · UK · USA · Bangladesh · Canada · Russia — one trusted partner
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white mb-6 leading-[1.05] font-mont">
@@ -113,7 +113,7 @@ export default async function Home() {
             </h1>
 
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
-              MBBS in Nepal for Indian students. Engineering in India, Higher Education in the UK, USA & Japan for Nepali students. End-to-end guidance — shortlisting, applications, scholarships, visa and beyond.
+              MBBS, MD & MS for medical aspirants, plus Engineering, Nursing, Health Sciences and Agriculture — across Nepal, India, UK, USA, Bangladesh, Canada & Russia. End-to-end guidance — shortlisting, applications, scholarships, visa and beyond.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-12">
@@ -183,6 +183,55 @@ export default async function Home() {
               {displayCountries.slice(0, 6).map((c) => (
                 <CountryCard key={c.code} country={c as any} />
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ============== MESSAGE FROM MANAGING DIRECTOR ============== */}
+        <section className="py-20 md:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-5 gap-10 items-center">
+              {/* Portrait */}
+              <div className="lg:col-span-2">
+                <div className="relative max-w-sm mx-auto">
+                  {/* To use a real photo, drop it at /public/anand-thakur.jpg and render
+                      <Image src="/anand-thakur.jpg" alt="Mr. Anand Thakur" fill className="object-cover" /> here. */}
+                  <div className="relative aspect-[4/5] rounded-3xl overflow-hidden bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-950 shadow-2xl border border-white/10 flex flex-col items-center justify-center text-white/90">
+                    <div className="w-28 h-28 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-5xl font-black font-mont mb-3">
+                      AT
+                    </div>
+                    <div className="text-sm font-semibold tracking-wide">Mr. Anand Thakur</div>
+                    <div className="text-xs text-white/60 mt-1">Managing Director &amp; Co-founder</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Message */}
+              <div className="lg:col-span-3">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                  <Quote className="w-3.5 h-3.5" /> Message from our Managing Director
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white font-mont mb-5">
+                  Welcome to Dreamer&apos;s Way Consultancy
+                </h2>
+                <div className="space-y-4 text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p>
+                    For over eight years, our mission has stayed the same — to give every student honest, transparent guidance and a clear path to the right university abroad. Whether you dream of becoming a doctor, engineer, nurse or researcher, our team walks with you from your very first question to your first day on campus.
+                  </p>
+                  <p>
+                    We don&apos;t just guide admissions — we help you make informed, confident and future-ready academic choices. That is the promise behind everything we do.
+                  </p>
+                </div>
+                <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div>
+                    <div className="font-bold text-gray-900 dark:text-white font-mont">Mr. Anand Thakur</div>
+                    <div className="text-sm text-primary font-semibold">Managing Director &amp; Co-founder</div>
+                  </div>
+                  <Link href="/about" className="sm:ml-auto inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:gap-2.5 transition-all">
+                    Read more about us <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -425,7 +474,7 @@ export default async function Home() {
                   {[
                     "100% free first consultation",
                     "Honest, profile-based recommendations",
-                    "5,000+ students successfully placed",
+                    "500+ students successfully placed",
                     "Transparent pricing, no surprises",
                   ].map((b) => (
                     <div key={b} className="flex items-center gap-2">

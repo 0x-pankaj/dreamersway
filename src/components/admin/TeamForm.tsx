@@ -8,16 +8,22 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import ImageUpload from './ImageUpload';
+import { TeamMember } from '@/types';
 
-export default function TeamForm() {
+interface TeamFormProps {
+    member?: TeamMember; // If provided, we're editing
+}
+
+export default function TeamForm({ member }: TeamFormProps) {
     const router = useRouter();
+    const isEditing = !!member;
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
-        designation: '',
-        photo_url: '',
-        bio: '',
-        display_order: 0
+        name: member?.name || '',
+        designation: member?.designation || '',
+        photo_url: member?.photo_url || '',
+        bio: member?.bio || '',
+        display_order: member?.display_order ?? 0
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -25,13 +31,18 @@ export default function TeamForm() {
         setLoading(true);
 
         try {
-            const { error } = await supabase.from('team_members').insert([formData]);
-            if (error) throw error;
+            if (isEditing) {
+                const { error } = await supabase.from('team_members').update(formData).eq('id', member!.id);
+                if (error) throw error;
+            } else {
+                const { error } = await supabase.from('team_members').insert([formData]);
+                if (error) throw error;
+            }
 
             router.push('/admin/team');
             router.refresh();
-        } catch (error) {
-            alert("Error saving team member");
+        } catch (error: any) {
+            alert("Error saving team member: " + (error?.message || ''));
             console.error(error);
         } finally {
             setLoading(false);
@@ -70,7 +81,7 @@ export default function TeamForm() {
 
             <div className="flex justify-end gap-4">
                 <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
-                <Button type="submit" disabled={loading}>{loading ? 'Saving...' : 'Add Member'}</Button>
+                <Button type="submit" disabled={loading}>{loading ? 'Saving...' : isEditing ? 'Update Member' : 'Add Member'}</Button>
             </div>
         </form>
     );

@@ -4,15 +4,26 @@ import Link from "next/link";
 import { Navigation } from "@/components/navigation";
 import Footer from "@/components/sections/Footer";
 import { Button } from "@/components/ui/button";
-import { Heart, Target, Award, Users, Globe2, CheckCircle2, Sparkles } from "lucide-react";
+import {
+    Heart, Target, Award, Users, Globe2, CheckCircle2, Sparkles, Quote,
+    GraduationCap, Briefcase, Stethoscope, Cpu, HeartPulse, Activity, Sprout,
+} from "lucide-react";
 import { getTeam } from "@/lib/data";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
     title: "About Dreamer's Way Consultancy",
     description:
-        "Meet the team behind Dreamer's Way Consultancy. Honest, expert guidance to study abroad in Nepal, India, UK, USA and Japan.",
+        "Meet Mr. Anand Thakur and the team behind Dreamer's Way Consultancy — honest, expert guidance for MBBS, MD/MS, Engineering, Nursing, Health Sciences and Agriculture across Nepal, India, UK, USA, Bangladesh, Canada and Russia.",
     alternates: { canonical: "/about" },
+};
+
+const DEPT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+    doctor: Stethoscope,
+    engineer: Cpu,
+    bhs: HeartPulse,
+    nursing: Activity,
+    agriculture: Sprout,
 };
 
 export const revalidate = 60;
@@ -25,10 +36,10 @@ const VALUES = [
 ];
 
 const STATS = [
-    { value: "12+", label: "Years of guidance" },
-    { value: "5,000+", label: "Students placed" },
-    { value: "200+", label: "Partner universities" },
-    { value: "95%", label: "Visa success rate" },
+    { value: "8+", label: "Years of guidance" },
+    { value: "500+", label: "Students placed" },
+    { value: "50+", label: "Partner institutions" },
+    { value: "90%+", label: "Visa success rate" },
 ];
 
 export default async function AboutPage() {
@@ -46,10 +57,10 @@ export default async function AboutPage() {
                             </div>
                             <h1 className="text-4xl md:text-6xl font-black font-mont mb-4 leading-tight">
                                 Helping students cross borders
-                                <span className="block bg-gradient-to-r from-amber-300 to-yellow-200 bg-clip-text text-transparent">since 2012</span>
+                                <span className="block bg-gradient-to-r from-amber-300 to-yellow-200 bg-clip-text text-transparent">since 2018</span>
                             </h1>
                             <p className="text-lg text-white/80 leading-relaxed">
-                                {siteConfig.name} began with a single mission — to bring honest, transparent, expert guidance to students dreaming of studying abroad. Today we help students travel both ways: Indian students to Nepal for medical, and Nepali students to India, UK, USA and Japan for engineering and higher education.
+                                {siteConfig.name} began with a single mission — to bring honest, transparent, expert guidance to students dreaming of studying abroad. With a dedicated Center of Excellence for medical aspirants and structured advisory across Engineering, Nursing, Health Sciences and Agriculture, we place students in trusted institutions across Nepal, India, UK, USA, Bangladesh, Canada and Russia.
                             </p>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -63,8 +74,98 @@ export default async function AboutPage() {
                     </div>
                 </section>
 
+                {/* Director's message */}
+                <section className="py-16 md:py-20">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid lg:grid-cols-5 gap-10 items-center">
+                            {/* Portrait */}
+                            <div className="lg:col-span-2">
+                                <div className="relative max-w-sm mx-auto">
+                                    {/* To use a real photo, drop it at /public/anand-thakur.jpg and render
+                                        <Image src="/anand-thakur.jpg" alt="Mr. Anand Thakur" fill className="object-cover" /> here. */}
+                                    <div className="relative aspect-[4/5] rounded-3xl overflow-hidden bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 shadow-2xl border border-white/10 flex flex-col items-center justify-center text-white/90">
+                                        <div className="w-28 h-28 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-5xl font-black font-mont mb-3">
+                                            AT
+                                        </div>
+                                        <div className="text-sm font-semibold tracking-wide">Mr. Anand Thakur</div>
+                                        <div className="text-xs text-white/60 mt-1">Managing Director &amp; Co-founder</div>
+                                    </div>
+                                    <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-[90%] bg-white dark:bg-gray-950 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 px-5 py-3 flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                            <Briefcase className="w-5 h-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400">MBA · Symbiosis Intl. University</div>
+                                            <div className="text-sm font-bold text-gray-900 dark:text-white">8+ years in education consulting</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Message */}
+                            <div className="lg:col-span-3 pt-8 lg:pt-0">
+                                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                                    <Quote className="w-3.5 h-3.5" /> Message from leadership
+                                </div>
+                                <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white font-mont mb-1">
+                                    Mr. Anand Thakur
+                                </h2>
+                                <p className="text-primary font-semibold mb-5">
+                                    Managing Director &amp; Co-founder, Dreamer&apos;s Way Consultancy
+                                </p>
+
+                                <div className="space-y-4 text-gray-700 dark:text-gray-300 leading-relaxed text-[15px]">
+                                    <p>
+                                        Mr. Anand Thakur is the Managing Director and Co-founder of Dreamer&apos;s Way Consultancy, a premier student advisory organization specializing in end-to-end international education pathways. With a robust focus on medical education, he provides strategic guidance for students pursuing MBBS, as well as postgraduate medical specializations like MD and MS abroad.
+                                    </p>
+                                    <p>
+                                        He holds an MBA from Symbiosis International University, India, which complements his expertise in strategic management and student advisory services. With over eight years of experience in international education consulting, Mr. Thakur has developed deep expertise in navigating complex medical education pathways — supporting a significant number of international students, particularly from India, in securing placements in competitive MBBS, MD, and MS programs while navigating foreign medical licensing, clinical rotations, and institutional selection.
+                                    </p>
+                                    <p>
+                                        Under his leadership, Dreamer&apos;s Way Consultancy has established strong collaborations with globally reputed medical and academic institutions. While the organization maintains a specialized Center of Excellence for medical aspirants, it also provides structured, high-standard advisory services for students pursuing Bachelors, Masters, and Doctoral programs across diverse fields in the UK, USA, Australia, Canada, and beyond. His approach is defined by transparency, structured counseling, and ethical advisory practices, building a student-first ecosystem that emphasizes clarity in decision-making and reliability in admission support.
+                                    </p>
+                                </div>
+
+                                <blockquote className="mt-6 border-l-4 border-primary pl-5 italic text-gray-800 dark:text-gray-200">
+                                    &ldquo;Our responsibility is not just to guide admissions, but to ensure our students — whether entering their undergraduate journey or specializing through MD/MS — make informed, confident, and future-ready academic choices.&rdquo;
+                                </blockquote>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Departments / fields we specialize in */}
+                <section className="py-16 bg-gray-50 dark:bg-gray-950 border-y border-gray-100 dark:border-gray-900">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-10">
+                            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                                <GraduationCap className="w-3.5 h-3.5" /> Departments
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white font-mont">
+                                Fields we specialize in
+                            </h2>
+                            <p className="text-gray-600 dark:text-gray-400 mt-3 max-w-2xl mx-auto">
+                                From medical and health sciences to engineering and agriculture — structured guidance for every academic path.
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                            {siteConfig.streams.map((s) => {
+                                const Icon = DEPT_ICONS[s.code] || GraduationCap;
+                                return (
+                                    <div key={s.code} className="bg-white dark:bg-black rounded-2xl p-5 border border-gray-200 dark:border-gray-800 text-center hover:border-primary/40 hover:shadow-lg transition-all">
+                                        <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center text-primary-foreground mb-3">
+                                            <Icon className="w-6 h-6" />
+                                        </div>
+                                        <div className="font-bold text-gray-900 dark:text-white font-mont text-sm">{s.name}</div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </section>
+
                 {/* Mission */}
-                <section className="py-16 bg-gray-50 dark:bg-gray-950">
+                <section className="py-16 bg-white dark:bg-black">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 items-center">
                         <div>
                             <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4 font-mont">Our mission</h2>

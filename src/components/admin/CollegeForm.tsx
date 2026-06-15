@@ -28,7 +28,7 @@ export default function CollegeForm({ initialData }: Props) {
         name: initialData?.name || "",
         slug: initialData?.slug || "",
         country_code: initialData?.country_code || "nepal",
-        stream_codes: initialData?.stream_codes || ["medical"],
+        stream_codes: initialData?.stream_codes || ["doctor"],
         city: initialData?.city || "",
         address: initialData?.address || "",
         hospital_address: initialData?.hospital_address || "",

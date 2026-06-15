@@ -5,7 +5,7 @@ export const siteConfig = {
     shortName: "DWC",
     tagline: "Your global education partner — one platform, every dream destination.",
     description:
-        "Dreamer's Way Consultancy helps Indian students pursue MBBS in Nepal, Nepali students pursue engineering in India, and higher education in the UK, USA and Japan. End-to-end guidance from shortlisting to landing.",
+        "Dreamer's Way Consultancy provides end-to-end international education guidance — with a Center of Excellence for medical aspirants (MBBS, MD, MS) and structured advisory for Engineering, Nursing, Health Sciences and Agriculture across Nepal, India, UK, USA, Bangladesh, Canada and Russia.",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://dreamersway.com.np",
     ogImage: "/dwc_logo.png",
     contact: {
@@ -24,17 +24,21 @@ export const siteConfig = {
         youtube: "https://youtube.com/",
     },
     countries: [
-        { code: "nepal", name: "Nepal", flag: "🇳🇵", stream: "Medical (MBBS / BDS)", forStudents: "for Indian students" },
-        { code: "india", name: "India", flag: "🇮🇳", stream: "Engineering (B.Tech / BE)", forStudents: "for Nepali students" },
-        { code: "uk", name: "United Kingdom", flag: "🇬🇧", stream: "Higher Education", forStudents: "for Nepali students" },
-        { code: "usa", name: "United States", flag: "🇺🇸", stream: "Higher Education", forStudents: "for Nepali students" },
-        { code: "japan", name: "Japan", flag: "🇯🇵", stream: "Higher Education", forStudents: "for Nepali students" },
+        { code: "nepal", name: "Nepal", flag: "🇳🇵", stream: "Medical (MBBS / BDS)", forStudents: "MBBS, BDS & Health Sciences" },
+        { code: "india", name: "India", flag: "🇮🇳", stream: "MBBS, Engineering & Nursing", forStudents: "MBBS, Engineering & Nursing" },
+        { code: "uk", name: "United Kingdom", flag: "🇬🇧", stream: "Higher Education", forStudents: "Bachelors, Masters & PhD" },
+        { code: "usa", name: "United States", flag: "🇺🇸", stream: "Higher Education", forStudents: "Bachelors, Masters & PhD" },
+        { code: "bangladesh", name: "Bangladesh", flag: "🇧🇩", stream: "Medical (MBBS / BDS)", forStudents: "MBBS, BDS & Nursing" },
+        { code: "canada", name: "Canada", flag: "🇨🇦", stream: "Higher Education", forStudents: "Bachelors, Masters & PG Diploma" },
+        { code: "russia", name: "Russia", flag: "🇷🇺", stream: "Medical & Engineering", forStudents: "MBBS, MD/MS & Engineering" },
     ] as const,
+    // Departments / fields of study we specialize in.
     streams: [
-        { code: "medical", name: "Medical", icon: "Stethoscope" },
-        { code: "engineering", name: "Engineering", icon: "Cpu" },
-        { code: "higher-education", name: "Higher Education", icon: "GraduationCap" },
-        { code: "mba", name: "MBA & Management", icon: "Briefcase" },
+        { code: "doctor", name: "Doctor", icon: "Stethoscope" },
+        { code: "engineer", name: "Engineer", icon: "Cpu" },
+        { code: "bhs", name: "BHS (Health Sciences)", icon: "HeartPulse" },
+        { code: "nursing", name: "Nursing", icon: "Activity" },
+        { code: "agriculture", name: "Agriculture", icon: "Sprout" },
     ] as const,
 };
 

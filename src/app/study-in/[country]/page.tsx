@@ -469,6 +469,30 @@ const DEFAULT_WHY: Record<string, { title: string; description: string }[]> = {
     { title: "Work part-time", description: "Up to 28 hours/week of part-time work allowed." },
     { title: "Post-study work visa", description: "Designated Activities visa lets you job-hunt for 1 year+." },
   ],
+  bangladesh: [
+    { title: "Affordable MBBS & BDS", description: "Quality medical education at a fraction of private college fees in India." },
+    { title: "BMDC & WHO recognized", description: "Colleges recognized by BMDC and listed in the WHO directory (WDOMS)." },
+    { title: "English-medium teaching", description: "Curriculum closely aligned with the Indian medical syllabus." },
+    { title: "No donation, transparent fees", description: "Direct, structured admission with clear, upfront cost." },
+    { title: "FMGE / NExT preparation", description: "Dedicated coaching for Indian licensing exams." },
+    { title: "Close to home", description: "Short travel and a familiar culture and climate for South Asian students." },
+  ],
+  canada: [
+    { title: "Post-graduation work permit", description: "Up to 3 years of work rights after completing your program." },
+    { title: "Pathway to PR", description: "One of the clearest study-to-permanent-residency routes in the world." },
+    { title: "Top-ranked universities", description: "Toronto, UBC, McGill, Waterloo and globally respected colleges." },
+    { title: "Affordable quality", description: "World-class education at lower tuition than the US or UK." },
+    { title: "Safe & welcoming", description: "Consistently ranked among the safest, most inclusive countries." },
+    { title: "Co-op & internships", description: "Paid co-op programs that build career experience while you study." },
+  ],
+  russia: [
+    { title: "Globally recognized MBBS", description: "Government medical universities recognized by NMC, WHO and FAIMER." },
+    { title: "Low cost, high quality", description: "Affordable MBBS and MD/MS with strong clinical training." },
+    { title: "English-medium programs", description: "Full degree programs taught in English for international students." },
+    { title: "No entrance donation", description: "Direct admission with transparent, structured fees." },
+    { title: "Strong in engineering", description: "Renowned for aerospace, petroleum and core engineering disciplines." },
+    { title: "Established Indian community", description: "Large international student base and support networks on campus." },
+  ],
 };
 
 const DEFAULT_STEPS = [

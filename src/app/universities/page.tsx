@@ -7,9 +7,9 @@ import { getUniversities } from "@/lib/data";
 import { Building2 } from "lucide-react";
 
 export const metadata: Metadata = {
-    title: "Universities & Colleges — Compare 200+ Institutions Worldwide",
+    title: "Universities & Colleges — Compare Top Institutions Worldwide",
     description:
-        "Explore universities across Nepal, India, UK, USA and Japan. Filter by country, stream and type. Tuition, programs, scholarships and admissions in one place.",
+        "Explore universities across Nepal, India, UK, USA, Bangladesh, Canada and Russia. Filter by country, stream and type. Tuition, programs, scholarships and admissions in one place.",
     alternates: { canonical: "/universities" },
 };
 

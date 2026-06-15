@@ -2,8 +2,8 @@
 // Dreamer's Way Consultancy — Multi-country platform types
 // ============================================================
 
-export type CountryCode = 'nepal' | 'india' | 'uk' | 'usa' | 'japan' | string;
-export type StreamCode = 'medical' | 'engineering' | 'higher-education' | 'mba' | string;
+export type CountryCode = 'nepal' | 'india' | 'uk' | 'usa' | 'bangladesh' | 'canada' | 'russia' | string;
+export type StreamCode = 'doctor' | 'engineer' | 'bhs' | 'nursing' | 'agriculture' | string;
 
 export interface Country {
     id: string;

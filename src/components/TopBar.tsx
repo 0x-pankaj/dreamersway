@@ -11,7 +11,7 @@ export default function TopBar() {
                     <div className="hidden sm:flex items-center gap-2">
                         <Globe2 className="w-4 h-4" />
                         <span className="font-semibold">Study Abroad —</span>
-                        <span className="font-bold text-blue-900">Nepal · India · UK · USA · Japan</span>
+                        <span className="font-bold text-blue-900">Nepal · India · UK · USA · Bangladesh · Canada · Russia</span>
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-6 text-xs md:text-sm whitespace-nowrap font-medium">

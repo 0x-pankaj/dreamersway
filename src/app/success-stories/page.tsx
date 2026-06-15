@@ -31,7 +31,7 @@ export default async function StoriesPage() {
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black font-mont mb-3">Real dreams. Real outcomes.</h1>
                         <p className="text-lg text-white/80 max-w-3xl">
-                            5,000+ students have started their global journey with us. Here are some of their stories.
+                            500+ students have started their global journey with us. Here are some of their stories.
                         </p>
                     </div>
                 </section>

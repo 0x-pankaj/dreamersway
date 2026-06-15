@@ -29,6 +29,17 @@ export default function AdminTeamPage() {
         setLoading(false);
     };
 
+    const handleDelete = async (id: string, name: string) => {
+        if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+        const { error } = await supabase.from('team_members').delete().eq('id', id);
+        if (error) {
+            alert("Error deleting team member: " + (error.message || ''));
+            console.error(error);
+            return;
+        }
+        setMembers((prev) => prev.filter((m) => m.id !== id));
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -65,10 +76,17 @@ export default function AdminTeamPage() {
                                     <TableCell>{member.designation}</TableCell>
                                     <TableCell className="text-right gap-2">
                                         <div className="flex justify-end gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                <Edit className="w-4 h-4" />
-                                            </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600">
+                                            <Link href={`/admin/team/${member.id}/edit`}>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                    <Edit className="w-4 h-4" />
+                                                </Button>
+                                            </Link>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8 text-red-600"
+                                                onClick={() => handleDelete(member.id, member.name)}
+                                            >
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
                                         </div>
