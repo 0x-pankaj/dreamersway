@@ -9,9 +9,9 @@ export const siteConfig = {
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://dreamersway.com.np",
     ogImage: "/dwc_logo.png",
     contact: {
-        phonePrimary: "+977 9851 000000",
+        phonePrimary: "+977 981-9602000",
         phoneIndia: "+91 99999 00000",
-        whatsapp: "9779851000000",
+        whatsapp: "9779819602000",
         email: "info@dreamersway.com.np",
         address: "Kathmandu, Nepal",
         mapEmbedSrc:
