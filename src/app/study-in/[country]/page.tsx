@@ -15,6 +15,12 @@ import {
   Sparkles,
   ArrowRight,
   Award,
+  Banknote,
+  Briefcase,
+  Clock,
+  Heart,
+  Landmark,
+  Languages,
 } from "lucide-react";
 import { Navigation } from "@/components/navigation";
 import Footer from "@/components/sections/Footer";
@@ -30,6 +36,7 @@ import {
   getBlogPosts,
 } from "@/lib/data";
 import { siteConfig } from "@/lib/site-config";
+import { countryProfiles } from "@/lib/country-profiles";
 
 export const revalidate = 60;
 
@@ -65,30 +72,42 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
     getBlogPosts({ countryCode: code, limit: 3 }),
   ]);
 
-  // Allow page to render even if not yet seeded, using local fallback config.
+  // Allow page to render even if not yet seeded, using local fallback config
+  // and the rich, code-based country profile. Supabase values always win.
   const fallback = siteConfig.countries.find((c) => c.code === code);
   if (!country && !fallback) notFound();
 
-  const c = country || {
+  const profile = countryProfiles[code];
+  const has = (v: any) => v != null && v !== "" && !(Array.isArray(v) && v.length === 0);
+  const merge = (a: any, b: any, d: any = "") => (has(a) ? a : has(b) ? b : d);
+
+  const c: any = {
     code,
-    name: fallback!.name,
-    flag_emoji: fallback!.flag,
-    tagline: fallback!.stream,
-    short_description: "",
-    long_description: "",
-    capital: "",
-    currency: "",
-    language: "",
-    intake_months: [],
-    avg_tuition_range: "",
-    avg_living_cost: "",
-    visa_type: "",
-    popular_cities: [] as string[],
-    popular_streams: [] as string[],
-    why_study: [] as any[],
-    process_steps: [] as any[],
-    required_documents: [] as string[],
-  } as any;
+    name: country?.name || fallback?.name || code,
+    flag_emoji: country?.flag_emoji || fallback?.flag,
+    tagline: merge(country?.tagline, profile?.tagline, fallback?.stream),
+    short_description: merge(country?.short_description, profile?.short_description),
+    long_description: merge(country?.long_description, profile?.long_description),
+    capital: merge(country?.capital, profile?.capital),
+    currency: merge(country?.currency, profile?.currency),
+    language: merge(country?.language, profile?.language),
+    intake_months: merge(country?.intake_months, profile?.intake_months, [] as string[]),
+    avg_tuition_range: merge(country?.avg_tuition_range, profile?.avg_tuition_range),
+    avg_living_cost: merge(country?.avg_living_cost, profile?.avg_living_cost),
+    visa_type: merge(country?.visa_type, profile?.visa_type),
+    visa_process_summary: merge(country?.visa_process_summary, profile?.visa_process_summary),
+    popular_cities: merge(country?.popular_cities, profile?.popular_cities, [] as string[]),
+    popular_streams: merge(country?.popular_streams, profile?.popular_streams, [] as string[]),
+    why_study: merge(country?.why_study, profile?.why_study, [] as any[]),
+    process_steps: country?.process_steps?.length ? country.process_steps : [],
+    required_documents: country?.required_documents?.length ? country.required_documents : [],
+    // Rich, profile-only sections.
+    key_facts: profile?.key_facts || [],
+    cost_breakdown: profile?.cost_breakdown || [],
+    study_options: profile?.study_options || [],
+    work_rights: profile?.work_rights || [],
+    student_life: profile?.student_life || [],
+  };
 
   const why = c.why_study?.length
     ? c.why_study
@@ -161,6 +180,22 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
           </div>
         </section>
 
+        {/* AT A GLANCE */}
+        {(c.capital || c.currency || c.language || c.key_facts.length > 0) && (
+          <section className="py-10 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-900">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {c.capital && <GlanceCard icon={Landmark} label="Capital" value={c.capital} />}
+                {c.currency && <GlanceCard icon={Banknote} label="Currency" value={c.currency} />}
+                {c.language && <GlanceCard icon={Languages} label="Language" value={c.language} />}
+                {(c.key_facts as { label: string; value: string }[]).map((f) => (
+                  <GlanceCard key={f.label} icon={CheckCircle2} label={f.label} value={f.value} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* OVERVIEW */}
         {c.long_description && (
           <section className="py-16 bg-white dark:bg-black">
@@ -200,8 +235,40 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
           </div>
         </section>
 
+        {/* STUDY OPTIONS */}
+        {c.study_options.length > 0 && (
+          <section className="py-16 md:py-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-10">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                  <GraduationCap className="w-3.5 h-3.5" /> Programs
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white font-mont">
+                  What you can study in {c.name}
+                </h2>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {(c.study_options as { title: string; duration: string; description: string }[]).map((o) => (
+                  <div key={o.title} className="bg-white dark:bg-black p-6 rounded-2xl border border-gray-200 dark:border-gray-800 hover:border-primary/40 hover:shadow-lg transition-all">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-11 h-11 rounded-xl bg-primary/15 text-primary flex items-center justify-center">
+                        <GraduationCap className="w-6 h-6" />
+                      </div>
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+                        <Clock className="w-3 h-3" /> {o.duration}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-1.5 font-mont">{o.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{o.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* UNIVERSITIES */}
-        <section className="py-16 md:py-20">
+        <section className="py-16 md:py-20 bg-gray-50 dark:bg-gray-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
               <div>
@@ -236,6 +303,45 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
           </div>
         </section>
 
+        {/* COST BREAKDOWN */}
+        {c.cost_breakdown.length > 0 && (
+          <section className="py-16 md:py-20 bg-white dark:bg-black">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-10">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                  <Banknote className="w-3.5 h-3.5" /> Transparent costs
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white font-mont">
+                  Cost of studying in {c.name}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 mt-3 max-w-2xl mx-auto">
+                  Approximate annual figures in USD. Final costs vary by university and city — we&apos;ll give you exact numbers during counselling.
+                </p>
+              </div>
+              <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800">
+                <table className="w-full text-left">
+                  <thead className="bg-gray-50 dark:bg-gray-950 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider">
+                    <tr>
+                      <th className="px-5 py-3 font-bold">Expense</th>
+                      <th className="px-5 py-3 font-bold">Estimated amount</th>
+                      <th className="px-5 py-3 font-bold hidden sm:table-cell">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+                    {(c.cost_breakdown as { category: string; amount: string; note?: string }[]).map((row) => (
+                      <tr key={row.category} className="bg-white dark:bg-black">
+                        <td className="px-5 py-4 font-semibold text-gray-900 dark:text-white">{row.category}</td>
+                        <td className="px-5 py-4 font-bold text-primary whitespace-nowrap">{row.amount}</td>
+                        <td className="px-5 py-4 text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">{row.note || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* SCHOLARSHIPS */}
         {scholarships.length > 0 && (
           <section className="py-16 md:py-20 bg-amber-50/30 dark:bg-gray-950">
@@ -263,6 +369,33 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
                         Apply now →
                       </Link>
                     )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* WORK RIGHTS / AFTER YOUR DEGREE */}
+        {c.work_rights.length > 0 && (
+          <section className="py-16 md:py-20 bg-gray-50 dark:bg-gray-950">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-10">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                  <Briefcase className="w-3.5 h-3.5" /> After your degree
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white font-mont">
+                  Licensing &amp; career pathways
+                </h2>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {(c.work_rights as { title: string; description: string }[]).map((w) => (
+                  <div key={w.title} className="bg-white dark:bg-black p-6 rounded-2xl border border-gray-200 dark:border-gray-800 hover:border-primary/40 hover:shadow-lg transition-all">
+                    <div className="w-11 h-11 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-3">
+                      <Briefcase className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-1.5 font-mont">{w.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{w.description}</p>
                   </div>
                 ))}
               </div>
@@ -324,6 +457,33 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
             </div>
           </div>
         </section>
+
+        {/* STUDENT LIFE */}
+        {c.student_life.length > 0 && (
+          <section className="py-16 md:py-20 bg-white dark:bg-black">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-10">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                  <Heart className="w-3.5 h-3.5" /> Life in {c.name}
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white font-mont">
+                  What student life looks like
+                </h2>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {(c.student_life as { title: string; description: string }[]).map((s) => (
+                  <div key={s.title} className="bg-gray-50 dark:bg-gray-950 p-6 rounded-2xl border border-gray-200 dark:border-gray-800">
+                    <div className="w-11 h-11 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-3">
+                      <Heart className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-1.5 font-mont">{s.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{s.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* FAQS */}
         {faqs.length > 0 && (
@@ -418,6 +578,20 @@ function FactCard({ icon: Icon, label, value }: { icon: any; label: string; valu
       <Icon className="w-5 h-5 text-amber-300 mb-2" />
       <div className="text-xs text-white/70 font-medium">{label}</div>
       <div className="font-bold text-white text-sm">{value}</div>
+    </div>
+  );
+}
+
+function GlanceCard({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-3 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl p-4">
+      <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+        <Icon className="w-5 h-5" />
+      </div>
+      <div className="min-w-0">
+        <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">{label}</div>
+        <div className="font-bold text-gray-900 dark:text-white text-sm leading-snug">{value}</div>
+      </div>
     </div>
   );
 }

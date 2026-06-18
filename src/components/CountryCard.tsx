@@ -16,6 +16,10 @@ const FALLBACK_GRADIENTS: Record<string, string> = {
     bangladesh: "from-green-600 via-emerald-500 to-red-600",
     canada: "from-red-600 via-white/30 to-red-500",
     russia: "from-blue-600 via-white/30 to-red-600",
+    georgia: "from-red-600 via-white/30 to-red-500",
+    uzbekistan: "from-sky-500 via-white/30 to-emerald-500",
+    kyrgyzstan: "from-red-600 via-rose-500 to-amber-500",
+    philippines: "from-blue-700 via-red-600 to-amber-400",
 };
 
 export function CountryCard({ country, variant = "default" }: Props) {

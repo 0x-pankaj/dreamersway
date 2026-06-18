@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
     Heart, Target, Award, Users, Globe2, CheckCircle2, Sparkles, Quote,
     GraduationCap, Briefcase, Stethoscope, Cpu, HeartPulse, Activity, Sprout,
+    Linkedin, Mail, Phone,
 } from "lucide-react";
 import { getTeam } from "@/lib/data";
 import { siteConfig } from "@/lib/site-config";
@@ -14,7 +15,7 @@ import { siteConfig } from "@/lib/site-config";
 export const metadata: Metadata = {
     title: "About Dreamer's Way Consultancy",
     description:
-        "Meet Mr. Anand Thakur and the team behind Dreamer's Way Consultancy — honest, expert guidance for MBBS, MD/MS, Engineering, Nursing, Health Sciences and Agriculture across Nepal, India, UK, USA, Bangladesh, Canada and Russia.",
+        "Meet Mr. Anand Thakur and the team behind Dreamer's Way Consultancy — honest, expert guidance for MBBS, MD/MS, Engineering, Nursing, Health Sciences and Agriculture across Nepal, India, UK, USA, Bangladesh, Canada, Russia, Georgia, Uzbekistan, Kyrgyzstan and the Philippines.",
     alternates: { canonical: "/about" },
 };
 
@@ -60,7 +61,7 @@ export default async function AboutPage() {
                                 <span className="block bg-gradient-to-r from-amber-300 to-yellow-200 bg-clip-text text-transparent">since 2018</span>
                             </h1>
                             <p className="text-lg text-white/80 leading-relaxed">
-                                {siteConfig.name} began with a single mission — to bring honest, transparent, expert guidance to students dreaming of studying abroad. With a dedicated Center of Excellence for medical aspirants and structured advisory across Engineering, Nursing, Health Sciences and Agriculture, we place students in trusted institutions across Nepal, India, UK, USA, Bangladesh, Canada and Russia.
+                                {siteConfig.name} began with a single mission — to bring honest, transparent, expert guidance to students dreaming of studying abroad. With a dedicated Center of Excellence for medical aspirants and structured advisory across Engineering, Nursing, Health Sciences and Agriculture, we place students in trusted institutions across Nepal, India, UK, USA, Bangladesh, Canada, Russia, Georgia, Uzbekistan, Kyrgyzstan and the Philippines.
                             </p>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -209,21 +210,84 @@ export default async function AboutPage() {
                                     People who care about your future
                                 </h2>
                             </div>
-                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                                {team.map((m) => (
-                                    <div key={m.id} className="bg-white dark:bg-gray-950 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-xl transition-shadow">
-                                        <div className="relative aspect-square bg-gradient-to-br from-primary/15 to-amber-500/15">
-                                            {m.photo_url && (
-                                                <Image src={m.photo_url} alt={m.name} fill className="object-cover" />
-                                            )}
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {team.map((m) => {
+                                    const initials = m.name
+                                        .split(" ")
+                                        .map((w) => w[0])
+                                        .filter(Boolean)
+                                        .slice(0, 2)
+                                        .join("")
+                                        .toUpperCase();
+                                    return (
+                                        <div
+                                            key={m.id}
+                                            className="group relative bg-white dark:bg-gray-950 rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-800 hover:border-primary/40 hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300"
+                                        >
+                                            {/* Photo / initials */}
+                                            <div className="relative aspect-[4/5] bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 overflow-hidden">
+                                                {m.photo_url ? (
+                                                    <Image
+                                                        src={m.photo_url}
+                                                        alt={m.name}
+                                                        fill
+                                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <span className="text-5xl font-black font-mont text-white/90">{initials}</span>
+                                                    </div>
+                                                )}
+                                                {/* gradient scrim so name is readable over photos */}
+                                                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                                                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                                                    <h3 className="font-black text-lg font-mont leading-tight drop-shadow">{m.name}</h3>
+                                                    <p className="text-sm font-semibold text-amber-300 drop-shadow">{m.designation}</p>
+                                                </div>
+                                            </div>
+
+                                            {/* Body */}
+                                            <div className="p-5">
+                                                {m.bio && (
+                                                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-4">{m.bio}</p>
+                                                )}
+                                                {(m.linkedin_url || m.email || m.phone) && (
+                                                    <div className="flex items-center gap-2 mt-4">
+                                                        {m.linkedin_url && (
+                                                            <a
+                                                                href={m.linkedin_url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                aria-label={`${m.name} on LinkedIn`}
+                                                                className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+                                                            >
+                                                                <Linkedin className="w-4 h-4" />
+                                                            </a>
+                                                        )}
+                                                        {m.email && (
+                                                            <a
+                                                                href={`mailto:${m.email}`}
+                                                                aria-label={`Email ${m.name}`}
+                                                                className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+                                                            >
+                                                                <Mail className="w-4 h-4" />
+                                                            </a>
+                                                        )}
+                                                        {m.phone && (
+                                                            <a
+                                                                href={`tel:${m.phone}`}
+                                                                aria-label={`Call ${m.name}`}
+                                                                className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+                                                            >
+                                                                <Phone className="w-4 h-4" />
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="p-5">
-                                            <h3 className="font-bold text-gray-900 dark:text-white font-mont">{m.name}</h3>
-                                            <p className="text-sm text-primary font-semibold mb-2">{m.designation}</p>
-                                            {m.bio && <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3">{m.bio}</p>}
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </section>

@@ -23,6 +23,11 @@ import {
   Briefcase,
   Star,
   Quote,
+  Stethoscope,
+  Cpu,
+  HeartPulse,
+  Activity,
+  Sprout,
 } from "lucide-react";
 import {
   getCountries,
@@ -47,6 +52,14 @@ const SERVICE_ICONS: Record<string, React.ComponentType<{ className?: string }>>
   PlaneTakeoff: Plane,
 };
 
+const STREAM_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  doctor: Stethoscope,
+  engineer: Cpu,
+  bhs: HeartPulse,
+  nursing: Activity,
+  agriculture: Sprout,
+};
+
 export default async function Home() {
   const [countries, featuredUnis, notices, services, stories, blogPosts] = await Promise.all([
     getCountries(),
@@ -57,22 +70,27 @@ export default async function Home() {
     getBlogPosts({ limit: 3 }),
   ]);
 
-  const displayCountries = countries.length
-    ? countries
-    : siteConfig.countries.map((c, i) => ({
-      id: String(i),
-      created_at: "",
-      code: c.code,
-      name: c.name,
-      flag_emoji: c.flag,
-      tagline: c.stream,
-      popular_streams: [c.code === "nepal" ? "medical" : c.code === "india" ? "engineering" : "higher-education"],
-      is_active: true,
-      display_order: i,
-    } as any));
+  // Start from Supabase countries, then append any configured destination that
+  // isn't seeded yet so newly added countries always show up on the homepage.
+  const seededCodes = new Set(countries.map((c) => c.code));
+  const configFallback = siteConfig.countries.map((c, i) => ({
+    id: `cfg-${c.code}`,
+    created_at: "",
+    code: c.code,
+    name: c.name,
+    flag_emoji: c.flag,
+    tagline: c.stream,
+    popular_streams: [c.code === "nepal" ? "medical" : c.code === "india" ? "engineering" : "higher-education"],
+    is_active: true,
+    display_order: countries.length + i,
+  } as any));
+  const displayCountries = [
+    ...countries,
+    ...configFallback.filter((c) => !seededCodes.has(c.code)),
+  ];
 
   const stats = [
-    { value: "7+", label: "Countries", icon: Globe2 },
+    { value: "11+", label: "Countries", icon: Globe2 },
     { value: "50+", label: "Partner Universities", icon: GraduationCap },
     { value: "500+", label: "Students Placed", icon: Users },
     { value: "8+", label: "Years of Experience", icon: Award },
@@ -102,7 +120,7 @@ export default async function Home() {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-2.5 rounded-full text-sm font-semibold mb-7 animate-fade-in-up">
               <Sparkles className="w-4 h-4 text-amber-300" />
-              Nepal · India · UK · USA · Bangladesh · Canada · Russia — one trusted partner
+              Nepal · India · UK · USA · Canada · Georgia · Philippines & more — one trusted partner
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white mb-6 leading-[1.05] font-mont">
@@ -113,7 +131,7 @@ export default async function Home() {
             </h1>
 
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
-              MBBS, MD & MS for medical aspirants, plus Engineering, Nursing, Health Sciences and Agriculture — across Nepal, India, UK, USA, Bangladesh, Canada & Russia. End-to-end guidance — shortlisting, applications, scholarships, visa and beyond.
+              MBBS, MD & MS for medical aspirants, plus Engineering, Nursing, Health Sciences and Agriculture — across Nepal, India, UK, USA, Bangladesh, Canada, Russia, Georgia, Uzbekistan, Kyrgyzstan & the Philippines. End-to-end guidance — shortlisting, applications, scholarships, visa and beyond.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-12">
@@ -160,6 +178,50 @@ export default async function Home() {
                   <div className="text-xs md:text-sm text-white/70 font-medium">{s.label}</div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ============== CAREERS / FIELDS ============== */}
+        <section className="py-16 md:py-24 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-900 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-10">
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                <Briefcase className="w-3.5 h-3.5" /> Careers we build
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white font-mont mb-4">
+                One platform, every career path
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                From doctors and engineers to nurses, health-science and agriculture professionals — we guide students into the careers that shape their future.
+              </p>
+            </div>
+
+            {/* Hero career lineup */}
+            <div className="relative mx-auto max-w-5xl bg-white rounded-3xl p-4 sm:p-6 shadow-sm ring-1 ring-gray-100 dark:ring-gray-800">
+              <Image
+                src="/careers-fields.png"
+                alt="Students across professions — engineer, doctor, business, hospitality and nursing"
+                width={1400}
+                height={760}
+                priority
+                className="w-full h-auto object-contain"
+              />
+            </div>
+
+            {/* Streams */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-10">
+              {siteConfig.streams.map((s) => {
+                const Icon = STREAM_ICONS[s.code] || GraduationCap;
+                return (
+                  <div key={s.code} className="bg-white dark:bg-black rounded-2xl p-5 border border-gray-200 dark:border-gray-800 text-center hover:border-primary/40 hover:shadow-lg transition-all">
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center text-primary-foreground mb-3">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <div className="font-bold text-gray-900 dark:text-white font-mont text-sm">{s.name}</div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>

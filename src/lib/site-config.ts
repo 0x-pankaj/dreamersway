@@ -5,7 +5,7 @@ export const siteConfig = {
     shortName: "DWC",
     tagline: "Your global education partner — one platform, every dream destination.",
     description:
-        "Dreamer's Way Consultancy provides end-to-end international education guidance — with a Center of Excellence for medical aspirants (MBBS, MD, MS) and structured advisory for Engineering, Nursing, Health Sciences and Agriculture across Nepal, India, UK, USA, Bangladesh, Canada and Russia.",
+        "Dreamer's Way Consultancy provides end-to-end international education guidance — with a Center of Excellence for medical aspirants (MBBS, MD, MS) and structured advisory for Engineering, Nursing, Health Sciences and Agriculture across Nepal, India, UK, USA, Bangladesh, Canada, Russia, Georgia, Uzbekistan, Kyrgyzstan and the Philippines.",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://dreamersway.com.np",
     ogImage: "/dwc_logo.png",
     contact: {
@@ -31,6 +31,10 @@ export const siteConfig = {
         { code: "bangladesh", name: "Bangladesh", flag: "🇧🇩", stream: "Medical (MBBS / BDS)", forStudents: "MBBS, BDS & Nursing" },
         { code: "canada", name: "Canada", flag: "🇨🇦", stream: "Higher Education", forStudents: "Bachelors, Masters & PG Diploma" },
         { code: "russia", name: "Russia", flag: "🇷🇺", stream: "Medical & Engineering", forStudents: "MBBS, MD/MS & Engineering" },
+        { code: "georgia", name: "Georgia", flag: "🇬🇪", stream: "Medical (MBBS / MD)", forStudents: "MBBS, MD & Health Sciences" },
+        { code: "uzbekistan", name: "Uzbekistan", flag: "🇺🇿", stream: "Medical (MBBS)", forStudents: "MBBS & Health Sciences" },
+        { code: "kyrgyzstan", name: "Kyrgyzstan", flag: "🇰🇬", stream: "Medical (MBBS)", forStudents: "MBBS & Health Sciences" },
+        { code: "philippines", name: "Philippines", flag: "🇵🇭", stream: "Medical (MD) & Nursing", forStudents: "MD, Nursing & Allied Health" },
     ] as const,
     // Departments / fields of study we specialize in.
     streams: [
